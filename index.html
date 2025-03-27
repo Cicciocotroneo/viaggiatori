@@ -102,7 +102,7 @@
         .section-header {
             display: flex;
             justify-content: space-between;
-            align-items: right;
+            align-items: center;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--gray);
@@ -501,7 +501,7 @@
         <section id="programma" class="section">
             <div class="section-header">
                 <h2 class="section-title">Programma del Viaggio</h2>
-          </br>  </br>    <div>
+         /* </br>  </br>    <div>
                     <button class="btn btn-primary" onclick="exportItinerary()">
                         <span>Esporta Programma</span>
                     </button> </br> </br>
@@ -513,7 +513,7 @@
 </button> </br> </br>
 <button class="btn btn-primary" onclick="importDataFromJson()" style="margin-left: 10px;">
     <span>Importa JSON</span>
-</button>
+</button> */
                 </div>
             </div>
             
@@ -558,6 +558,35 @@
                 <!-- Il contenuto verrà popolato con JavaScript -->
             </div>
         </section>
+
+html
+<section id="export-options" class="section">
+    <div class="section-header">
+        <h2 class="section-title">Opzioni di Esportazione e Gestione Dati</h2>
+    </div>
+    
+    <div style="padding: 1.5rem; text-align: center;">
+        <button class="btn btn-primary" onclick="exportItinerary()">
+            <span>Esporta Programma</span>
+        </button>
+        <br><br>
+        
+        <button class="btn btn-primary" onclick="exportDataToJson()">
+            <span>Esporta JSON</span>
+        </button>
+        <br><br>
+        
+        <button class="btn btn-primary" onclick="importDataFromJson()">
+            <span>Importa JSON</span>
+        </button>
+        <br><br>
+        
+        <button class="btn btn-error" onclick="clearAllData()">
+            <span>Cancella Tutti i Dati</span>
+        </button>
+    </div>
+</section>
+
     </main>
     
     <div class="floating-action">
