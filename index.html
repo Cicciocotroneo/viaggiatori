@@ -508,6 +508,12 @@
                     <button class="btn btn-error" onclick="clearAllData()" style="margin-left: 10px;">
                         <span>Cancella Tutti i Dati</span>
                     </button>
+<button class="btn btn-primary" onclick="exportDataToJson()">
+    <span>Esporta JSON</span>
+</button>
+<button class="btn btn-primary" onclick="importDataFromJson()" style="margin-left: 10px;">
+    <span>Importa JSON</span>
+</button>
                 </div>
             </div>
             
@@ -1506,6 +1512,90 @@
                 showNotification('App avviata in modalità standalone');
             }
         });
+
+// Funzione per esportare tutti i dati in formato JSON
+function exportDataToJson() {
+    const dataToExport = {
+        mainTitle: document.getElementById('main-title').innerText,
+        itineraryData: itineraryData,
+        tipsGeneralData: tipsGeneralData,
+        tipsTransportData: tipsTransportData,
+        tipsAttractionsData: tipsAttractionsData,
+        emergencyData: emergencyData
+    };
+    
+    // Crea un elemento per il download
+    const element = document.createElement('a');
+    const jsonString = JSON.stringify(dataToExport, null, 2);
+    element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(jsonString));
+    
+    // Crea un nome file basato sul titolo
+    const fileName = document.getElementById('main-title').innerText.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    element.setAttribute('download', `${fileName}_dati.json`);
+    
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    
+    element.click();
+    
+    document.body.removeChild(element);
+    showNotification('Dati esportati con successo in formato JSON');
+}
+
+// Funzione per importare dati da un file JSON
+function importDataFromJson() {
+    // Crea un input file invisibile
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    
+    input.onchange = e => {
+        const file = e.target.files[0];
+        
+        if (!file) {
+            return;
+        }
+        
+        const reader = new FileReader();
+        
+        reader.onload = function(event) {
+            try {
+                const importedData = JSON.parse(event.target.result);
+                
+                // Verifica che il file contenga i dati necessari
+                if (!importedData.itineraryData || 
+                    !importedData.tipsGeneralData || 
+                    !importedData.tipsTransportData || 
+                    !importedData.tipsAttractionsData || 
+                    !importedData.emergencyData) {
+                    throw new Error('Il file JSON non contiene tutti i dati necessari');
+                }
+                
+                // Aggiorna i dati
+                document.getElementById('main-title').innerText = importedData.mainTitle || 'Il Mio Viaggio';
+                itineraryData = importedData.itineraryData;
+                tipsGeneralData = importedData.tipsGeneralData;
+                tipsTransportData = importedData.tipsTransportData;
+                tipsAttractionsData = importedData.tipsAttractionsData;
+                emergencyData = importedData.emergencyData;
+                
+                // Salva e renderizza
+                saveToLocalStorage();
+                renderAll();
+                updateManifest();
+                
+                showNotification('Dati importati con successo');
+            } catch (error) {
+                showNotification('Errore: impossibile importare i dati');
+                console.error('Errore durante l\'importazione:', error);
+            }
+        };
+        
+        reader.readAsText(file);
+    };
+    
+    input.click();
+}
     </script>
 </body>
 </html>
