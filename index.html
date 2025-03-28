@@ -428,6 +428,19 @@
             opacity: 0.6;
             text-decoration: line-through;
         }
+
+.activity-title span.completed,
+.activity-time.completed,
+.activity-description.completed {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+/* Mantieni lo stile originale per le note */
+.activity-notes {
+    opacity: 1 !important;
+    text-decoration: none !important;
+}
         
         #notification {
             position: fixed;
@@ -1513,7 +1526,15 @@ function addEditButtonsToDays() {
                 day.activities.forEach(activity => {
                     const activityElement = document.createElement('div');
                     activityElement.classList.add('activity');
-                    if (activity.completed) activityElement.classList.add('completed');
+                    if (activity.completed) {
+    const titleElement = activityElement.querySelector('.activity-title span');
+    const timeElement = activityElement.querySelector('.activity-time');
+    const descElement = activityElement.querySelector('.activity-description');
+    
+    if (titleElement) titleElement.classList.add('completed');
+    if (timeElement) timeElement.classList.add('completed');
+    if (descElement) descElement.classList.add('completed');
+}
 
                     // Funzione per convertire i ritorni a capo in tag HTML <br> e permettere l'uso di link HTML
                     function processText(text) {
@@ -1523,21 +1544,21 @@ function addEditButtonsToDays() {
                     }
                     
                     const activityContent = `
-                        <div class="activity-header">
-                            <div class="activity-title">
-                                <label class="checkbox-label">
-                                    <input type="checkbox" onchange="toggleActivityCompletion(${day.id}, ${activity.id})" ${activity.completed ? 'checked' : ''}>
-                                    <span>${activity.title}</span>
-                                </label>
-                            </div>
-                            <div class="activity-time">${activity.time}</div>
-                        </div>
-                        <div class="activity-description">${processText(activity.description)}</div>
-                        ${activity.notes ? `<div class="activity-notes">${processText(activity.notes)}</div>` : ''}
-                        <div class="edit-activity">
-                            <button class="btn btn-primary" onclick="showEditActivityModal(${day.id}, ${activity.id})">Modifica</button>
-                        </div>
-                    `;
+    <div class="activity-header">
+        <div class="activity-title">
+            <label class="checkbox-label">
+                <input type="checkbox" onchange="toggleActivityCompletion(${day.id}, ${activity.id})" ${activity.completed ? 'checked' : ''}>
+                <span class="${activity.completed ? 'completed' : ''}">${activity.title}</span>
+            </label>
+        </div>
+        <div class="activity-time ${activity.completed ? 'completed' : ''}">${activity.time}</div>
+    </div>
+    <div class="activity-description ${activity.completed ? 'completed' : ''}">${processText(activity.description)}</div>
+    ${activity.notes ? `<div class="activity-notes">${processText(activity.notes)}</div>` : ''}
+    <div class="edit-activity">
+        <button class="btn btn-primary" onclick="showEditActivityModal(${day.id}, ${activity.id})">Modifica</button>
+    </div>
+`;
 
                     activityElement.innerHTML = activityContent;
                     activitiesContainer.appendChild(activityElement);
@@ -1805,15 +1826,15 @@ function addEditButtonsToDays() {
             }
         }
 
-        function toggleActivityCompletion(dayId, activityId) {
-            const day = itineraryData.find(d => d.id === dayId);
-            const activity = day.activities.find(a => a.id === activityId);
-            
-            activity.completed = !activity.completed;
-            
-            saveToLocalStorage();
-            renderDays();
-        }
+     function toggleActivityCompletion(dayId, activityId) {
+    const day = itineraryData.find(d => d.id === dayId);
+    const activity = day.activities.find(a => a.id === activityId);
+    
+    activity.completed = !activity.completed;
+    
+    saveToLocalStorage();
+    renderDays();
+}
         
         function addTip() {
             const category = document.getElementById('add-tip-category').value;
