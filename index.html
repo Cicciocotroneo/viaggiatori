@@ -2260,19 +2260,64 @@ function loadArchivedTrip(tripName) {
     showNotification(`Viaggio "${tripName}" caricato con successo!`);
 }
 
-// Funzione per creare una pagina di archivio (da mettere in un nuovo file HTML se vuoi)
+// Funzione per creare una pagina di archivio
 function createArchivePage() {
-    const archivedTrips = JSON.parse(localStorage.getItem('archivedTrips') || {};
-    let html = '<!DOCTYPE html><html><head><title>Archivio Viaggi</title><style>body{font-family:Arial,sans-serif;margin:20px}table{width:100%;border-collapse:collapse}th,td{padding:12px;text-align:left;border-bottom:1px solid #ddd}.btn{padding:8px 12px;background:#1976d2;color:white;border:none;border-radius:4px;cursor:pointer}.btn:hover{background:#1565c0}</style></head><body><h1>Archivio Viaggi</h1><table><tr><th>Nome</th><th>Data</th><th>Azioni</th></tr>';
+    const archivedTrips = JSON.parse(localStorage.getItem('archivedTrips') || '{}');
+    let html = `<!DOCTYPE html>
+<html>
+<head>
+    <title>Archivio Viaggi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .btn {
+            padding: 8px 12px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .btn:hover {
+            background: #1565c0;
+        }
+        .btn-delete {
+            background: #f44336;
+        }
+        .btn-delete:hover {
+            background: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <h1>Archivio Viaggi</h1>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Data</th>
+            <th>Azioni</th>
+        </tr>`;
 
     for (const [name, trip] of Object.entries(archivedTrips)) {
-        const date = new Date(trip.timestamp).toLocaleDateString();
+        const date = new Date(trip.timestamp).toLocaleDateString('it-IT');
         html += `<tr>
             <td>${name}</td>
             <td>${date}</td>
             <td>
-                <button class="btn" onclick="window.opener.loadArchivedTrip('${name}'); window.close()">Carica</button>
-                <button class="btn" onclick="deleteTrip('${name}')">Elimina</button>
+                <button class="btn" onclick="window.opener.loadArchivedTrip('${name.replace(/'/g, "\\'")}'); window.close()">Carica</button>
+                <button class="btn btn-delete" onclick="deleteTrip('${name.replace(/'/g, "\\'")}')">Elimina</button>
             </td>
         </tr>`;
     }
@@ -2280,14 +2325,16 @@ function createArchivePage() {
     html += `</table>
     <script>
         function deleteTrip(name) {
-            if(confirm('Eliminare definitivamente questo viaggio?')) {
-                const trips = JSON.parse(localStorage.getItem('archivedTrips'));
+            if(confirm('Eliminare definitivamente il viaggio \"' + name + '\"?')) {
+                const trips = JSON.parse(localStorage.getItem('archivedTrips') || '{}');
                 delete trips[name];
                 localStorage.setItem('archivedTrips', JSON.stringify(trips));
                 location.reload();
             }
         }
-    </script></body></html>`;
+    </script>
+</body>
+</html>`;
 
     return html;
 }
@@ -2295,9 +2342,13 @@ function createArchivePage() {
 // Funzione per aprire la pagina di archivio
 function openArchivePage() {
     const archiveWindow = window.open('', 'ArchivioViaggi', 'width=800,height=600');
-    archiveWindow.document.write(createArchivePage());
+    if (archiveWindow) {
+        archiveWindow.document.write(createArchivePage());
+        archiveWindow.document.close();
+    } else {
+        alert('Impossibile aprire la finestra di archivio. Assicurati di non bloccare i popup.');
+    }
 }
-
     </script>
 </body>
 </html>
