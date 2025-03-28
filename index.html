@@ -1265,6 +1265,10 @@ function enableAllReordering() {
     
     // Abilita il riordinamento per i contatti di emergenza
     enableEmergencyReordering();
+
+        // Assicurati che i pulsanti di modifica giorno siano ancora visibili
+    addEditButtonsToDays();
+    
 }
 
 
@@ -1278,7 +1282,156 @@ function enableAllReordering() {
    }
 
         }
+// Funzioni per modificare ed eliminare giorni
 
+// Mostra la modal per modificare un giorno
+function showEditDayModal(dayId) {
+    const day = itineraryData.find(d => d.id === dayId);
+    if (!day) return;
+    
+    // Se la modal non esiste, creala
+    if (!document.getElementById('edit-day-modal')) {
+        createEditDayModal();
+    }
+    
+    // Imposta i valori nei campi della modal
+    document.getElementById('edit-day-id').value = dayId;
+    document.getElementById('edit-day-title').value = day.title;
+    
+    // Converti la data dal formato italiano a quello YYYY-MM-DD per l'input
+    const dateParts = day.date.split(' ');
+    const dayNumber = parseInt(dateParts[0]);
+    const monthName = dateParts[1];
+    const year = parseInt(dateParts[2]);
+    
+    // Mappa i nomi dei mesi italiani ai numeri
+    const monthMap = {
+        'gennaio': 0, 'febbraio': 1, 'marzo': 2, 'aprile': 3, 
+        'maggio': 4, 'giugno': 5, 'luglio': 6, 'agosto': 7, 
+        'settembre': 8, 'ottobre': 9, 'novembre': 10, 'dicembre': 11
+    };
+    
+    // Crea un oggetto data e formattalo per l'input date
+    const dateObj = new Date(year, monthMap[monthName.toLowerCase()], dayNumber);
+    const formattedDate = dateObj.toISOString().split('T')[0];
+    
+    document.getElementById('edit-day-date').value = formattedDate;
+    
+    // Mostra la modal
+    const modal = document.getElementById('edit-day-modal');
+    modal.style.display = 'flex';
+}
+
+// Crea la modal per modificare un giorno
+function createEditDayModal() {
+    const modal = document.createElement('div');
+    modal.id = 'edit-day-modal';
+    modal.className = 'modal';
+    
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Modifica Giorno</h3>
+                <span class="close-modal" onclick="closeModal('edit-day-modal')">&times;</span>
+            </div>
+            <form id="edit-day-form">
+                <input type="hidden" id="edit-day-id">
+                
+                <div class="form-group">
+                    <label class="form-label" for="edit-day-title">Titolo</label>
+                    <input type="text" class="form-control" id="edit-day-title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="edit-day-date">Data</label>
+                    <input type="date" class="form-control" id="edit-day-date" required>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-error" onclick="deleteDay()">Elimina Giorno</button>
+                    <button type="button" class="btn btn-primary" onclick="saveDay()">Salva</button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+// Salva le modifiche a un giorno
+function saveDay() {
+    const dayId = parseInt(document.getElementById('edit-day-id').value);
+    const title = document.getElementById('edit-day-title').value;
+    const date = document.getElementById('edit-day-date').value;
+    
+    const day = itineraryData.find(d => d.id === dayId);
+    if (!day) return;
+    
+    // Aggiorna i dati del giorno
+    day.title = title;
+    
+    // Converti la data in formato leggibile italiano
+    const formattedDate = new Date(date).toLocaleDateString('it-IT', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+    
+    day.date = formattedDate;
+    
+    // Salva e aggiorna la UI
+    saveToLocalStorage();
+    renderDays();
+    closeModal('edit-day-modal');
+    
+    // Se la modalità riordinamento è attiva, riabilita i controlli
+    if (document.getElementById('toggle-reorder-mode') && 
+        document.getElementById('toggle-reorder-mode').classList.contains('active')) {
+        enableAllReordering();
+    }
+}
+
+// Elimina un giorno
+function deleteDay() {
+    const dayId = parseInt(document.getElementById('edit-day-id').value);
+    
+    if (confirm('Sei sicuro di voler eliminare questo giorno e tutte le sue attività? Questa azione non può essere annullata.')) {
+        // Rimuovi il giorno dall'array
+        itineraryData = itineraryData.filter(d => d.id !== dayId);
+        
+        // Salva e aggiorna la UI
+        saveToLocalStorage();
+        renderDays();
+        closeModal('edit-day-modal');
+    }
+}
+
+// Modifica la funzione renderDays per aggiungere il pulsante di modifica
+function addEditButtonsToDays() {
+    itineraryData.forEach(day => {
+        const dayElement = document.getElementById(`day-${day.id}`);
+        if (!dayElement) return;
+        
+        const dayHeader = dayElement.querySelector('.day-header');
+        
+        // Verifica se il pulsante modifica è già presente
+        if (!dayHeader.querySelector('.edit-day-btn')) {
+            // Crea il pulsante di modifica
+            const editButton = document.createElement('button');
+            editButton.className = 'btn btn-primary edit-day-btn';
+            editButton.innerHTML = 'Modifica Giorno';
+            editButton.style.marginLeft = 'auto';
+            editButton.style.marginRight = '0.5rem';
+            editButton.onclick = (e) => {
+                e.stopPropagation();
+                showEditDayModal(day.id);
+            };
+            
+            // Aggiungi il pulsante all'header del giorno
+            dayHeader.appendChild(editButton);
+        }
+    });
+}
         // Funzioni di rendering
         function renderDays() {
             const daysContainer = document.getElementById('days-container');
@@ -1354,6 +1507,10 @@ function enableAllReordering() {
                 `;
                 daysContainer.appendChild(emptyStateElement);
             }
+
+                // Aggiungi i pulsanti di modifica ai giorni
+    addEditButtonsToDays();
+
         }
 
         function renderTips() {
