@@ -898,7 +898,33 @@
             renderAll();
             showNotification('Dati caricati');
         }
+        window.loadArchivedTrip = function(tripName) {
+    try {
+        const archivedTrips = JSON.parse(localStorage.getItem('archivedTrips') || '{}');
+        const tripData = archivedTrips[tripName];
         
+        if (tripData) {
+            // Aggiorna i dati correnti
+            document.getElementById('main-title').innerText = tripData.mainTitle || 'Il Mio Viaggio';
+            itineraryData = tripData.itineraryData || [];
+            tipsGeneralData = tripData.tipsGeneralData || [];
+            tipsTransportData = tripData.tipsTransportData || [];
+            tipsAttractionsData = tripData.tipsAttractionsData || [];
+            emergencyData = tripData.emergencyData || [];
+            
+            saveToLocalStorage();
+            renderAll();
+            showNotification(`Viaggio "${tripName}" caricato!`);
+            return true;
+        }
+        showNotification('Viaggio non trovato!');
+        return false;
+    } catch (error) {
+        console.error('Errore caricamento viaggio:', error);
+        showNotification('Errore nel caricamento del viaggio');
+        return false;
+    }
+};
 // Funzioni per riordinare gli elementi
 
 // Abilita funzionalità di riordinamento per i giorni
