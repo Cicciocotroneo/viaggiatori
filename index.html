@@ -2260,6 +2260,17 @@ function loadArchivedTrip(tripName) {
     showNotification(`Viaggio "${tripName}" caricato con successo!`);
 }
 
+        // Funzione per aprire la pagina di archivio
+function openArchivePage() {
+    const archiveWindow = window.open('', 'ArchivioViaggi', 'width=800,height=600');
+    if (!archiveWindow) {
+        alert('Disabilita il blocco popup per visualizzare l\'archivio');
+        return;
+    }
+    
+    archiveWindow.document.write(createArchivePage());
+    archiveWindow.document.close();
+}
 // Funzione per creare una pagina di archivio
 function createArchivePage() {
     const archivedTrips = JSON.parse(localStorage.getItem('archivedTrips') || '{}';
@@ -2320,17 +2331,7 @@ function createArchivePage() {
     return html;
 }
 
-// Funzione per aprire la pagina di archivio
-function openArchivePage() {
-    const archiveWindow = window.open('', 'ArchivioViaggi', 'width=800,height=600');
-    if (!archiveWindow) {
-        alert('Disabilita il blocco popup per visualizzare l\'archivio');
-        return;
-    }
-    
-    archiveWindow.document.write(createArchivePage());
-    archiveWindow.document.close();
-}
+
     </script>
 </body>
 </html>
