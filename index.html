@@ -567,11 +567,9 @@
 <section id="export-options" class="section">
     <div class="section-header">
         <h2 class="section-title">Opzioni di Esportazione e Gestione Dati</h2>
-
-<button id="toggle-reorder-mode" class="btn btn-secondary">
+        <button id="toggle-reorder-mode" class="btn btn-secondary">
             <span>Modalità Riordinamento</span>
         </button>
-
     </div>
     
     <div style="padding: 1.5rem; text-align: center;">
@@ -589,7 +587,15 @@
             <span>Importa JSON</span>
         </button>
         <br><br>
-        
+
+        <button class="btn btn-primary" onclick="archiveCurrentTrip()">
+            <span>Archivia Viaggio</span>
+        </button>
+        <br><br>
+        <button class="btn btn-primary" onclick="openArchivePage()">
+    <span>Apri Archivio</span>
+</button>
+<br><br>
         <button class="btn btn-error" onclick="clearAllData()">
             <span>Cancella Tutti i Dati</span>
         </button>
@@ -1873,56 +1879,44 @@ function addEditButtonsToDays() {
         }
         
         // Funzione per cancellare tutti i dati
-        function clearAllData() {
-            if (confirm('Sei sicuro di voler cancellare tutti i dati? Questa azione non può essere annullata.')) {
-                localStorage.clear();
-                
-                // Reimposta i dati alle impostazioni predefinite
-                document.getElementById('main-title').innerText = 'Il Mio Viaggio';
-                itineraryData = [];
-
-                tipsGeneralData = [
-                    "Esempio: Verifica i documenti necessari per il viaggio",
-                    "Esempio: Controlla le previsioni meteo prima della partenza",
-                    "Esempio: Porta con te medicinali di base"
-                ];
-
-                tipsTransportData = [
-                    "Esempio: Verifica gli orari dei mezzi pubblici in anticipo",
-                    "Esempio: Considera l'acquisto di biglietti o pass per più giorni",
-                    "Esempio: Scarica l'app per la mobilità locale"
-                ];
-
-                tipsAttractionsData = [
-                    "Esempio: Prenota le attrazioni principali in anticipo",
-                    "Esempio: Verifica gli orari di apertura e chiusura",
-                    "Esempio: Cerca sconti o offerte per gruppi/famiglie"
-                ];
-
-                emergencyData = [
-                    {
-                        id: 1,
-                        name: "Emergenze",
-                        number: "112"
-                    },
-                    {
-                        id: 2,
-                        name: "Esempio: Hotel",
-                        number: "+00 123 456789"
-                    },
-                    {
-                        id: 3,
-                        name: "Esempio: Contatto locale",
-                        number: "+00 987 654321"
-                    }
-                ];
-                
-                renderAll();
-                updateManifest();
-                showNotification('Tutti i dati sono stati cancellati');
-            }
-        }
-
+      function clearAllData() {
+    if (confirm('Sei sicuro di voler cancellare tutti i dati del viaggio corrente? I viaggi archiviati non verranno cancellati.')) {
+        // Reimposta solo i dati correnti, mantenendo gli archivi
+        localStorage.removeItem('mainTitle');
+        localStorage.removeItem('itineraryData');
+        localStorage.removeItem('tipsGeneralData');
+        localStorage.removeItem('tipsTransportData');
+        localStorage.removeItem('tipsAttractionsData');
+        localStorage.removeItem('emergencyData');
+        
+        document.getElementById('main-title').innerText = 'Il Mio Viaggio';
+        itineraryData = [];
+        tipsGeneralData = [
+            "Esempio: Verifica i documenti necessari per il viaggio",
+            "Esempio: Controlla le previsioni meteo prima della partenza",
+            "Esempio: Porta con te medicinali di base"
+        ];
+        tipsTransportData = [
+            "Esempio: Verifica gli orari dei mezzi pubblici in anticipo",
+            "Esempio: Considera l'acquisto di biglietti o pass per più giorni",
+            "Esempio: Scarica l'app per la mobilità locale"
+        ];
+        tipsAttractionsData = [
+            "Esempio: Prenota le attrazioni principali in anticipo",
+            "Esempio: Verifica gli orari di apertura e chiusura",
+            "Esempio: Cerca sconti o offerte per gruppi/famiglie"
+        ];
+        emergencyData = [
+            { id: 1, name: "Emergenze", number: "112" },
+            { id: 2, name: "Esempio: Hotel", number: "+00 123 456789" },
+            { id: 3, name: "Esempio: Contatto locale", number: "+00 987 654321" }
+        ];
+        
+        renderAll();
+        updateManifest();
+        showNotification('Dati del viaggio corrente cancellati');
+    }
+}
         // Funzione per esportare il programma come diario di viaggio
         function exportItinerary() {
             const mainTitle = document.getElementById('main-title').innerText;
@@ -2222,7 +2216,87 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+// Funzione per archiviare il viaggio corrente
+function archiveCurrentTrip() {
+    const tripName = prompt("Assegna un nome a questo viaggio:");
+    if (!tripName) return;
 
+    const archivedTrips = JSON.parse(localStorage.getItem('archivedTrips') || '{}');
+    const tripData = {
+        mainTitle: document.getElementById('main-title').innerText,
+        itineraryData: itineraryData,
+        tipsGeneralData: tipsGeneralData,
+        tipsTransportData: tipsTransportData,
+        tipsAttractionsData: tipsAttractionsData,
+        emergencyData: emergencyData,
+        timestamp: new Date().toISOString()
+    };
+
+    archivedTrips[tripName] = tripData;
+    localStorage.setItem('archivedTrips', JSON.stringify(archivedTrips));
+    showNotification(`Viaggio "${tripName}" archiviato con successo!`);
+}
+
+// Funzione per caricare un viaggio archiviato
+function loadArchivedTrip(tripName) {
+    const archivedTrips = JSON.parse(localStorage.getItem('archivedTrips') || '{}');
+    const tripData = archivedTrips[tripName];
+
+    if (!tripData) {
+        showNotification('Viaggio non trovato!');
+        return;
+    }
+
+    document.getElementById('main-title').innerText = tripData.mainTitle || 'Il Mio Viaggio';
+    itineraryData = tripData.itineraryData || [];
+    tipsGeneralData = tripData.tipsGeneralData || [];
+    tipsTransportData = tripData.tipsTransportData || [];
+    tipsAttractionsData = tripData.tipsAttractionsData || [];
+    emergencyData = tripData.emergencyData || [];
+
+    saveToLocalStorage();
+    renderAll();
+    updateManifest();
+    showNotification(`Viaggio "${tripName}" caricato con successo!`);
+}
+
+// Funzione per creare una pagina di archivio (da mettere in un nuovo file HTML se vuoi)
+function createArchivePage() {
+    const archivedTrips = JSON.parse(localStorage.getItem('archivedTrips') || {};
+    let html = '<!DOCTYPE html><html><head><title>Archivio Viaggi</title><style>body{font-family:Arial,sans-serif;margin:20px}table{width:100%;border-collapse:collapse}th,td{padding:12px;text-align:left;border-bottom:1px solid #ddd}.btn{padding:8px 12px;background:#1976d2;color:white;border:none;border-radius:4px;cursor:pointer}.btn:hover{background:#1565c0}</style></head><body><h1>Archivio Viaggi</h1><table><tr><th>Nome</th><th>Data</th><th>Azioni</th></tr>';
+
+    for (const [name, trip] of Object.entries(archivedTrips)) {
+        const date = new Date(trip.timestamp).toLocaleDateString();
+        html += `<tr>
+            <td>${name}</td>
+            <td>${date}</td>
+            <td>
+                <button class="btn" onclick="window.opener.loadArchivedTrip('${name}'); window.close()">Carica</button>
+                <button class="btn" onclick="deleteTrip('${name}')">Elimina</button>
+            </td>
+        </tr>`;
+    }
+
+    html += `</table>
+    <script>
+        function deleteTrip(name) {
+            if(confirm('Eliminare definitivamente questo viaggio?')) {
+                const trips = JSON.parse(localStorage.getItem('archivedTrips'));
+                delete trips[name];
+                localStorage.setItem('archivedTrips', JSON.stringify(trips));
+                location.reload();
+            }
+        }
+    </script></body></html>`;
+
+    return html;
+}
+
+// Funzione per aprire la pagina di archivio
+function openArchivePage() {
+    const archiveWindow = window.open('', 'ArchivioViaggi', 'width=800,height=600');
+    archiveWindow.document.write(createArchivePage());
+}
 
     </script>
 </body>
