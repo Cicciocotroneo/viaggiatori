@@ -596,6 +596,15 @@
     <span>Apri Archivio</span>
 </button>
 <br><br>
+        <button class="btn btn-primary" onclick="exportArchiveToJson()">
+    <span>Esporta Archivio Completo</span>
+</button>
+<br><br>
+
+<button class="btn btn-primary" onclick="importArchiveFromJson()">
+    <span>Importa Archivio Completo</span>
+</button>
+<br><br>
         <button class="btn btn-error" onclick="clearAllData()">
             <span>Cancella Tutti i Dati</span>
         </button>
@@ -2079,6 +2088,77 @@ function addEditButtonsToDays() {
         // Variabile per l'installazione PWA
         let deferredPrompt;
 
+// Esporta tutto l'archivio come JSON
+function exportArchiveToJson() {
+    try {
+        const archiveData = JSON.parse(localStorage.getItem('archivedTrips') || '{}');
+        if (Object.keys(archiveData).length === 0) {
+            showNotification('Nessun viaggio nell\'archivio da esportare');
+            return;
+        }
+
+        const dataStr = JSON.stringify(archiveData, null, 2);
+        const fileName = `archivio_viaggi_${new Date().toISOString().split('T')[0]}.json`;
+        
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(dataStr));
+        element.setAttribute('download', fileName);
+        element.style.display = 'none';
+        
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        
+        showNotification('Archivio esportato con successo!');
+    } catch (error) {
+        console.error('Errore esportazione archivio:', error);
+        showNotification('Errore durante l\'esportazione');
+    }
+}
+
+// Importa un archivio completo da JSON
+function importArchiveFromJson() {
+    if (!confirm('Attenzione: questo sovrascriverà completamente l\'archivio corrente. Continuare?')) {
+        return;
+    }
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    
+    input.onchange = e => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = event => {
+            try {
+                const importedData = JSON.parse(event.target.result);
+                
+                // Validazione base
+                if (typeof importedData !== 'object' || importedData === null) {
+                    throw new Error('Formato file non valido');
+                }
+
+                localStorage.setItem('archivedTrips', JSON.stringify(importedData));
+                showNotification('Archivio importato con successo!');
+                
+                // Ricarica la pagina archivio se aperta
+                if (window.ArchivioViaggi && !window.ArchivioViaggi.closed) {
+                    window.ArchivioViaggi.location.reload();
+                }
+            } catch (error) {
+                console.error('Errore importazione archivio:', error);
+                showNotification('Errore: file non valido o corrotto');
+            }
+        };
+        reader.readAsText(file);
+    };
+    
+    input.click();
+}
+
+        
         // Inizializzazione
         document.addEventListener('DOMContentLoaded', () => {
             // Inizializza il manifest
@@ -2369,6 +2449,7 @@ function openArchivePage() {
         
         // Debug
         console.log('Archivio generato con successo');
+                window.ArchivioViaggi = archiveWindow;
     } catch (error) {
         console.error('Errore apertura archivio:', error);
         alert('Errore nell\'apertura dell\'archivio');
