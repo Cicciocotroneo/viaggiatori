@@ -2193,7 +2193,11 @@ function importDataFromJson() {
 // Aggiungi listener per il pulsante di modalità riordinamento
 document.addEventListener('DOMContentLoaded', () => {
     // Codice esistente...
-    
+     window.addEventListener('message', function(event) {
+        if (event.data.type === 'loadArchivedTrip') {
+            loadArchivedTrip(event.data.data);
+        }
+    });
     // Aggiungi event listener per il pulsante di riordinamento
     const reorderButton = document.getElementById('toggle-reorder-mode');
     if (reorderButton) {
@@ -2223,7 +2227,89 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+function showArchivedTrips() {
+    const archivedTrips = JSON.parse(localStorage.getItem('archivedTrips') || '[]');
+    
+    if (archivedTrips.length === 0) {
+        alert('Nessun viaggio archiviato trovato');
+        return;
+    }
 
+    const archiveWindow = window.open('', '_blank');
+    const archiveHTML = `
+        <!DOCTYPE html>
+        <html lang="it">
+        <head>
+            <meta charset="UTF-8">
+            <title>Archivio Viaggi</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                .trip { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
+                .trip-title { font-size: 1.2em; font-weight: bold; }
+                .trip-date { color: #666; margin: 5px 0; }
+                button { padding: 5px 10px; margin-right: 5px; cursor: pointer; }
+            </style>
+        </head>
+        <body>
+            <h1>Archivio Viaggi</h1>
+            <div id="trips-container"></div>
+            <script>
+                const trips = ${JSON.stringify(archivedTrips)};
+                
+                function loadTrip(tripId) {
+                    const trip = trips.find(t => t.id === tripId);
+                    if (trip) {
+                        window.opener.postMessage({
+                            type: 'loadArchivedTrip',
+                            data: trip.data
+                        }, '*');
+                    }
+                }
+                
+                function deleteTrip(tripId) {
+                    if (confirm('Sei sicuro di voler eliminare questo viaggio dall\\\\'archivio?')) {
+                        const updatedTrips = trips.filter(t => t.id !== tripId);
+                        localStorage.setItem('archivedTrips', JSON.stringify(updatedTrips));
+                        location.reload();
+                    }
+                }
+                
+                function renderTrips() {
+                    const container = document.getElementById('trips-container');
+                    container.innerHTML = trips.map(trip => 
+                        '<div class="trip">' +
+                            '<div class="trip-title">' + trip.title + '</div>' +
+                            '<div class="trip-date">Archiviato il: ' + trip.date + '</div>' +
+                            '<button onclick="loadTrip(' + trip.id + ')">Carica</button>' +
+                            '<button onclick="deleteTrip(' + trip.id + ')">Elimina</button>' +
+                        '</div>'
+                    ).join('');
+                }
+                
+                renderTrips();
+            </script>
+        </body>
+        </html>
+    `;
+    
+    archiveWindow.document.write(archiveHTML);
+    archiveWindow.document.close();
+}
+function loadArchivedTrip(tripData) {
+    if (confirm('Caricare questo viaggio archiviato? I dati correnti verranno sovrascritti.')) {
+        document.getElementById('main-title').innerText = tripData.mainTitle;
+        itineraryData = tripData.itineraryData;
+        tipsGeneralData = tripData.tipsGeneralData;
+        tipsTransportData = tripData.tipsTransportData;
+        tipsAttractionsData = tripData.tipsAttractionsData;
+        emergencyData = tripData.emergencyData;
+        
+        saveToLocalStorage();
+        renderAll();
+        updateManifest();
+        showNotification('Viaggio caricato con successo');
+    }
+}
     </script>
 </body>
 </html>
