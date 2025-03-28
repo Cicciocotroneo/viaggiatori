@@ -2260,77 +2260,84 @@ function loadArchivedTrip(tripName) {
     showNotification(`Viaggio "${tripName}" caricato con successo!`);
 }
 
-        // Funzione per aprire la pagina di archivio
+        function createArchivePage() {
+    try {
+        const archivedTrips = JSON.parse(localStorage.getItem('archivedTrips') || '{}');
+        let html = [
+            '<!DOCTYPE html>',
+            '<html>',
+            '<head>',
+            '<title>Archivio Viaggi</title>',
+            '<style>',
+            'body { font-family: Arial, sans-serif; margin: 20px; }',
+            'table { width: 100%; border-collapse: collapse; }',
+            'th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }',
+            '.btn { padding: 8px 12px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 5px; }',
+            '.btn:hover { background: #1565c0; }',
+            '.btn-delete { background: #f44336; }',
+            '.btn-delete:hover { background: #d32f2f; }',
+            '</style>',
+            '</head>',
+            '<body>',
+            '<h1>Archivio Viaggi</h1>',
+            '<table>',
+            '<tr><th>Nome</th><th>Data</th><th>Azioni</th></tr>'
+        ];
+
+        Object.entries(archivedTrips).forEach(([name, trip]) => {
+            const date = new Date(trip.timestamp).toLocaleDateString('it-IT');
+            const safeName = name.replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+            html.push(
+                '<tr>',
+                `<td>${name}</td>`,
+                `<td>${date}</td>`,
+                '<td>',
+                `<button class="btn" onclick="window.opener.postMessage({action:'loadTrip',tripName:'${safeName}'},'*')">Carica</button>`,
+                `<button class="btn btn-delete" onclick="if(confirm('Eliminare il viaggio \\'${safeName}\\'?')) {`,
+                'const trips=JSON.parse(localStorage.getItem(\'archivedTrips\')||\'{}\');',
+                `delete trips['${safeName.replace(/'/g, "\\'")}'];`,
+                'localStorage.setItem(\'archivedTrips\',JSON.stringify(trips));',
+                'location.reload();',
+                '}">Elimina</button>',
+                '</td>',
+                '</tr>'
+            );
+        });
+
+        html.push(
+            '</table>',
+            '</body>',
+            '</html>'
+        );
+
+        return html.join('\n');
+    } catch (error) {
+        console.error('Errore creazione pagina archivio:', error);
+        return '<h1>Errore nel caricamento dell\'archivio</h1>';
+    }
+}
+
 function openArchivePage() {
-    const archiveWindow = window.open('', 'ArchivioViaggi', 'width=800,height=600');
-    if (!archiveWindow) {
-        alert('Disabilita il blocco popup per visualizzare l\'archivio');
-        return;
-    }
-    
-    archiveWindow.document.write(createArchivePage());
-    archiveWindow.document.close();
-}
-// Funzione per creare una pagina di archivio
-function createArchivePage() {
-    const archivedTrips = JSON.parse(localStorage.getItem('archivedTrips') || '{}';
-    let html = `<!DOCTYPE html>
-<html>
-<head>
-    <title>Archivio Viaggi</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        .btn { 
-            padding: 8px 12px; 
-            background: #1976d2; 
-            color: white; 
-            border: none; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            margin-right: 5px; 
+    try {
+        const htmlContent = createArchivePage();
+        const archiveWindow = window.open('', 'ArchivioViaggi', 'width=800,height=600');
+        
+        if (!archiveWindow) {
+            alert('Disabilita il blocco popup per visualizzare l\'archivio');
+            return;
         }
-        .btn:hover { background: #1565c0; }
-        .btn-delete { background: #f44336; }
-        .btn-delete:hover { background: #d32f2f; }
-    </style>
-</head>
-<body>
-    <h1>Archivio Viaggi</h1>
-    <table>
-        <tr><th>Nome</th><th>Data</th><th>Azioni</th></tr>`;
 
-    for (const [name, trip] of Object.entries(archivedTrips)) {
-        const date = new Date(trip.timestamp).toLocaleDateString('it-IT');
-        const safeName = name.replace(/'/g, "\\'");
-        html += `<tr>
-            <td>${name}</td>
-            <td>${date}</td>
-            <td>
-                <button class="btn" onclick="window.opener.loadArchivedTrip('${safeName}');window.close()">Carica</button>
-                <button class="btn btn-delete" onclick="deleteTrip('${safeName}')">Elimina</button>
-            </td>
-        </tr>`;
+        archiveWindow.document.open();
+        archiveWindow.document.write(htmlContent);
+        archiveWindow.document.close();
+        
+        // Debug
+        console.log('Archivio generato con successo');
+    } catch (error) {
+        console.error('Errore apertura archivio:', error);
+        alert('Errore nell\'apertura dell\'archivio');
     }
-
-    html += `</table>
-    <script>
-        function deleteTrip(name) {
-            if(confirm('Eliminare il viaggio \"' + name + '\"?')) {
-                const trips = JSON.parse(localStorage.getItem('archivedTrips') || '{}');
-                delete trips[name];
-                localStorage.setItem('archivedTrips', JSON.stringify(trips));
-                location.reload();
-            }
-        }
-    </script>
-</body>
-</html>`;
-
-    return html;
 }
-
 
     </script>
 </body>
