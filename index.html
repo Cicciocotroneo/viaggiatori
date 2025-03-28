@@ -2057,6 +2057,16 @@ function addEditButtonsToDays() {
         document.addEventListener('DOMContentLoaded', () => {
             // Inizializza il manifest
             updateManifest();
+
+
+
+
+
+            window.addEventListener('message', function(event) {
+    if (event.data && event.data.action === 'loadTrip') {
+        loadArchivedTrip(event.data.tripName);
+    }
+});
             
             // Gestione dell'installazione PWA
             window.addEventListener('beforeinstallprompt', (e) => {
