@@ -550,6 +550,11 @@
 <section id="export-options" class="section">
     <div class="section-header">
         <h2 class="section-title">Opzioni di Esportazione e Gestione Dati</h2>
+
+<button id="toggle-reorder-mode" class="btn btn-secondary">
+            <span>Modalità Riordinamento</span>
+        </button>
+
     </div>
     
     <div style="padding: 1.5rem; text-align: center;">
@@ -871,10 +876,407 @@
             showNotification('Dati caricati');
         }
         
+// Funzioni per riordinare gli elementi
+
+// Abilita funzionalità di riordinamento per i giorni
+function enableDayReordering() {
+    const daysContainer = document.getElementById('days-container');
+    const dayElements = daysContainer.querySelectorAll('.day');
+    
+    // Aggiungi pulsanti di riordinamento a ogni giorno
+    dayElements.forEach(day => {
+        // Verifica se i pulsanti sono già presenti
+        if (!day.querySelector('.reorder-buttons')) {
+            const dayHeader = day.querySelector('.day-header');
+            
+            // Crea il contenitore dei pulsanti
+            const reorderButtons = document.createElement('div');
+            reorderButtons.className = 'reorder-buttons';
+            reorderButtons.style.display = 'flex';
+            reorderButtons.style.gap = '0.5rem';
+            
+            // Ottieni l'ID del giorno
+            const dayId = parseInt(day.id.replace('day-', ''));
+            
+            // Pulsante "Sposta su"
+            const upButton = document.createElement('button');
+            upButton.className = 'btn btn-secondary';
+            upButton.innerHTML = '↑';
+            upButton.style.padding = '0.25rem 0.5rem';
+            upButton.title = 'Sposta su';
+            upButton.onclick = (e) => {
+                e.stopPropagation();
+                moveDayUp(dayId);
+            };
+            
+            // Pulsante "Sposta giù"
+            const downButton = document.createElement('button');
+            downButton.className = 'btn btn-secondary';
+            downButton.innerHTML = '↓';
+            downButton.style.padding = '0.25rem 0.5rem';
+            downButton.title = 'Sposta giù';
+            downButton.onclick = (e) => {
+                e.stopPropagation();
+                moveDayDown(dayId);
+            };
+            
+            // Aggiungi i pulsanti al contenitore
+            reorderButtons.appendChild(upButton);
+            reorderButtons.appendChild(downButton);
+            
+            // Aggiungi il contenitore dei pulsanti all'header del giorno
+            dayHeader.appendChild(reorderButtons);
+        }
+    });
+}
+
+// Muovi un giorno verso l'alto nella lista
+function moveDayUp(dayId) {
+    const dayIndex = itineraryData.findIndex(day => day.id === dayId);
+    
+    // Se il giorno è già in cima, non fare nulla
+    if (dayIndex <= 0) return;
+    
+    // Scambia la posizione con il giorno sopra
+    [itineraryData[dayIndex], itineraryData[dayIndex - 1]] = 
+    [itineraryData[dayIndex - 1], itineraryData[dayIndex]];
+    
+    // Salva e aggiorna la UI
+    saveToLocalStorage();
+    renderDays();
+    enableDayReordering(); // Riabilita i pulsanti di riordinamento
+}
+
+// Muovi un giorno verso il basso nella lista
+function moveDayDown(dayId) {
+    const dayIndex = itineraryData.findIndex(day => day.id === dayId);
+    
+    // Se il giorno è già in fondo, non fare nulla
+    if (dayIndex >= itineraryData.length - 1) return;
+    
+    // Scambia la posizione con il giorno sotto
+    [itineraryData[dayIndex], itineraryData[dayIndex + 1]] = 
+    [itineraryData[dayIndex + 1], itineraryData[dayIndex]];
+    
+    // Salva e aggiorna la UI
+    saveToLocalStorage();
+    renderDays();
+    enableDayReordering(); // Riabilita i pulsanti di riordinamento
+}
+
+// Abilita funzionalità di riordinamento per le attività
+function enableActivityReordering(dayId) {
+    const dayElement = document.getElementById(`day-${dayId}`);
+    if (!dayElement) return;
+    
+    const activityElements = dayElement.querySelectorAll('.activity');
+    
+    // Aggiungi pulsanti di riordinamento a ogni attività
+    activityElements.forEach(activity => {
+        // Verifica se i pulsanti sono già presenti
+        if (!activity.querySelector('.activity-reorder-buttons')) {
+            const activityHeader = activity.querySelector('.activity-header');
+            
+            // Crea il contenitore dei pulsanti
+            const reorderButtons = document.createElement('div');
+            reorderButtons.className = 'activity-reorder-buttons';
+            reorderButtons.style.display = 'flex';
+            reorderButtons.style.gap = '0.5rem';
+            
+            // Ottieni l'ID dell'attività
+            const activityId = parseInt(activity.querySelector('.edit-activity button').getAttribute('onclick').match(/\d+\s*,\s*(\d+)/)[1]);
+            
+            // Pulsante "Sposta su"
+            const upButton = document.createElement('button');
+            upButton.className = 'btn btn-secondary';
+            upButton.innerHTML = '↑';
+            upButton.style.padding = '0.25rem 0.5rem';
+            upButton.style.fontSize = '0.8rem';
+            upButton.title = 'Sposta su';
+            upButton.onclick = (e) => {
+                e.stopPropagation();
+                moveActivityUp(dayId, activityId);
+            };
+            
+            // Pulsante "Sposta giù"
+            const downButton = document.createElement('button');
+            downButton.className = 'btn btn-secondary';
+            downButton.innerHTML = '↓';
+            downButton.style.padding = '0.25rem 0.5rem';
+            downButton.style.fontSize = '0.8rem';
+            downButton.title = 'Sposta giù';
+            downButton.onclick = (e) => {
+                e.stopPropagation();
+                moveActivityDown(dayId, activityId);
+            };
+            
+            // Aggiungi i pulsanti al contenitore
+            reorderButtons.appendChild(upButton);
+            reorderButtons.appendChild(downButton);
+            
+            // Aggiungi il contenitore dei pulsanti all'header dell'attività
+            activityHeader.appendChild(reorderButtons);
+        }
+    });
+}
+
+// Muovi un'attività verso l'alto nella lista
+function moveActivityUp(dayId, activityId) {
+    const day = itineraryData.find(d => d.id === dayId);
+    if (!day) return;
+    
+    const activityIndex = day.activities.findIndex(activity => activity.id === activityId);
+    
+    // Se l'attività è già in cima, non fare nulla
+    if (activityIndex <= 0) return;
+    
+    // Scambia la posizione con l'attività sopra
+    [day.activities[activityIndex], day.activities[activityIndex - 1]] = 
+    [day.activities[activityIndex - 1], day.activities[activityIndex]];
+    
+    // Salva e aggiorna la UI
+    saveToLocalStorage();
+    renderDays();
+    // Riabilita il riordinamento per le attività del giorno
+    enableActivityReordering(dayId);
+}
+
+// Muovi un'attività verso il basso nella lista
+function moveActivityDown(dayId, activityId) {
+    const day = itineraryData.find(d => d.id === dayId);
+    if (!day) return;
+    
+    const activityIndex = day.activities.findIndex(activity => activity.id === activityId);
+    
+    // Se l'attività è già in fondo, non fare nulla
+    if (activityIndex >= day.activities.length - 1) return;
+    
+    // Scambia la posizione con l'attività sotto
+    [day.activities[activityIndex], day.activities[activityIndex + 1]] = 
+    [day.activities[activityIndex + 1], day.activities[activityIndex]];
+    
+    // Salva e aggiorna la UI
+    saveToLocalStorage();
+    renderDays();
+    // Riabilita il riordinamento per le attività del giorno
+    enableActivityReordering(dayId);
+}
+
+// Abilita il riordinamento per i consigli
+function enableTipsReordering(category) {
+    const tipsContainer = document.getElementById(`tips-${category}`);
+    if (!tipsContainer) return;
+    
+    const tipItems = tipsContainer.querySelectorAll('.tip-item');
+    
+    tipItems.forEach((tipItem, index) => {
+        // Verifica se i pulsanti sono già presenti
+        if (!tipItem.querySelector('.tip-reorder-buttons')) {
+            // Crea il contenitore dei pulsanti
+            const reorderButtons = document.createElement('div');
+            reorderButtons.className = 'tip-reorder-buttons';
+            reorderButtons.style.display = 'flex';
+            reorderButtons.style.gap = '0.5rem';
+            
+            // Pulsante "Sposta su"
+            const upButton = document.createElement('button');
+            upButton.className = 'btn btn-secondary';
+            upButton.innerHTML = '↑';
+            upButton.style.padding = '0.25rem 0.5rem';
+            upButton.style.fontSize = '0.8rem';
+            upButton.title = 'Sposta su';
+            upButton.onclick = (e) => {
+                e.stopPropagation();
+                moveTipUp(category, index);
+            };
+            
+            // Pulsante "Sposta giù"
+            const downButton = document.createElement('button');
+            downButton.className = 'btn btn-secondary';
+            downButton.innerHTML = '↓';
+            downButton.style.padding = '0.25rem 0.5rem';
+            downButton.style.fontSize = '0.8rem';
+            downButton.title = 'Sposta giù';
+            downButton.onclick = (e) => {
+                e.stopPropagation();
+                moveTipDown(category, index);
+            };
+            
+            // Aggiungi i pulsanti al contenitore
+            reorderButtons.appendChild(upButton);
+            reorderButtons.appendChild(downButton);
+            
+            // Inserisci il contenitore dei pulsanti prima del pulsante modifica
+            tipItem.insertBefore(reorderButtons, tipItem.querySelector('button'));
+        }
+    });
+}
+
+// Muovi un consiglio verso l'alto
+function moveTipUp(category, index) {
+    let tipsData;
+    
+    // Seleziona l'array corretto in base alla categoria
+    if (category === 'general') {
+        tipsData = tipsGeneralData;
+    } else if (category === 'transport') {
+        tipsData = tipsTransportData;
+    } else if (category === 'attractions') {
+        tipsData = tipsAttractionsData;
+    }
+    
+    // Se il consiglio è già in cima, non fare nulla
+    if (index <= 0 || !tipsData) return;
+    
+    // Scambia la posizione con il consiglio sopra
+    [tipsData[index], tipsData[index - 1]] = [tipsData[index - 1], tipsData[index]];
+    
+    // Salva e aggiorna la UI
+    saveToLocalStorage();
+    renderTips();
+    // Riabilita il riordinamento per i consigli
+    enableTipsReordering('general');
+    enableTipsReordering('transport');
+    enableTipsReordering('attractions');
+}
+
+// Muovi un consiglio verso il basso
+function moveTipDown(category, index) {
+    let tipsData;
+    
+    // Seleziona l'array corretto in base alla categoria
+    if (category === 'general') {
+        tipsData = tipsGeneralData;
+    } else if (category === 'transport') {
+        tipsData = tipsTransportData;
+    } else if (category === 'attractions') {
+        tipsData = tipsAttractionsData;
+    }
+    
+    // Se il consiglio è già in fondo, non fare nulla
+    if (index >= tipsData.length - 1 || !tipsData) return;
+    
+    // Scambia la posizione con il consiglio sotto
+    [tipsData[index], tipsData[index + 1]] = [tipsData[index + 1], tipsData[index]];
+    
+    // Salva e aggiorna la UI
+    saveToLocalStorage();
+    renderTips();
+    // Riabilita il riordinamento per i consigli
+    enableTipsReordering('general');
+    enableTipsReordering('transport');
+    enableTipsReordering('attractions');
+}
+
+// Abilita il riordinamento per i contatti di emergenza
+function enableEmergencyReordering() {
+    const emergencyContainer = document.getElementById('emergency-container');
+    if (!emergencyContainer) return;
+    
+    const emergencyItems = emergencyContainer.querySelectorAll('.emergency-item');
+    
+    emergencyItems.forEach((item, index) => {
+        // Verifica se i pulsanti sono già presenti
+        if (!item.querySelector('.emergency-reorder-buttons')) {
+            // Crea il contenitore dei pulsanti
+            const reorderButtons = document.createElement('div');
+            reorderButtons.className = 'emergency-reorder-buttons';
+            reorderButtons.style.display = 'flex';
+            reorderButtons.style.gap = '0.5rem';
+            reorderButtons.style.marginTop = '0.5rem';
+            
+            // Pulsante "Sposta su"
+            const upButton = document.createElement('button');
+            upButton.className = 'btn btn-secondary';
+            upButton.innerHTML = '↑';
+            upButton.style.padding = '0.25rem 0.5rem';
+            upButton.style.fontSize = '0.8rem';
+            upButton.title = 'Sposta su';
+            upButton.onclick = (e) => {
+                e.stopPropagation();
+                moveEmergencyUp(index);
+            };
+            
+            // Pulsante "Sposta giù"
+            const downButton = document.createElement('button');
+            downButton.className = 'btn btn-secondary';
+            downButton.innerHTML = '↓';
+            downButton.style.padding = '0.25rem 0.5rem';
+            downButton.style.fontSize = '0.8rem';
+            downButton.title = 'Sposta giù';
+            downButton.onclick = (e) => {
+                e.stopPropagation();
+                moveEmergencyDown(index);
+            };
+            
+            // Aggiungi i pulsanti al contenitore
+            reorderButtons.appendChild(upButton);
+            reorderButtons.appendChild(downButton);
+            
+            // Inserisci il contenitore dei pulsanti prima del pulsante modifica
+            item.insertBefore(reorderButtons, item.querySelector('button'));
+        }
+    });
+}
+
+// Muovi un contatto di emergenza verso l'alto
+function moveEmergencyUp(index) {
+    // Se il contatto è già in cima, non fare nulla
+    if (index <= 0) return;
+    
+    // Scambia la posizione con il contatto sopra
+    [emergencyData[index], emergencyData[index - 1]] = [emergencyData[index - 1], emergencyData[index]];
+    
+    // Salva e aggiorna la UI
+    saveToLocalStorage();
+    renderEmergencyNumbers();
+    // Riabilita il riordinamento
+    enableEmergencyReordering();
+}
+
+// Muovi un contatto di emergenza verso il basso
+function moveEmergencyDown(index) {
+    // Se il contatto è già in fondo, non fare nulla
+    if (index >= emergencyData.length - 1) return;
+    
+    // Scambia la posizione con il contatto sotto
+    [emergencyData[index], emergencyData[index + 1]] = [emergencyData[index + 1], emergencyData[index]];
+    
+    // Salva e aggiorna la UI
+    saveToLocalStorage();
+    renderEmergencyNumbers();
+    // Riabilita il riordinamento
+    enableEmergencyReordering();
+}
+
+// Abilita tutte le funzionalità di riordinamento
+function enableAllReordering() {
+    enableDayReordering();
+    
+    // Abilita il riordinamento delle attività per ogni giorno
+    itineraryData.forEach(day => {
+        enableActivityReordering(day.id);
+    });
+    
+    // Abilita il riordinamento per i consigli
+    enableTipsReordering('general');
+    enableTipsReordering('transport');
+    enableTipsReordering('attractions');
+    
+    // Abilita il riordinamento per i contatti di emergenza
+    enableEmergencyReordering();
+}
+
+
         function renderAll() {
             renderDays();
             renderTips();
             renderEmergencyNumbers();
+// Se la modalità riordinamento è attiva
+   if (document.getElementById('toggle-reorder-mode').classList.contains('active')) {
+       enableAllReordering();
+   }
+
         }
 
         // Funzioni di rendering
@@ -1612,6 +2014,42 @@ function importDataFromJson() {
     
     input.click();
 }
+
+
+// Aggiungi listener per il pulsante di modalità riordinamento
+document.addEventListener('DOMContentLoaded', () => {
+    // Codice esistente...
+    
+    // Aggiungi event listener per il pulsante di riordinamento
+    const reorderButton = document.getElementById('toggle-reorder-mode');
+    if (reorderButton) {
+        reorderButton.addEventListener('click', function() {
+            const isActive = this.classList.contains('active');
+            
+            if (isActive) {
+                // Disattiva la modalità riordinamento
+                this.classList.remove('active');
+                this.classList.remove('btn-primary');
+                this.classList.add('btn-secondary');
+                this.querySelector('span').textContent = 'Modalità Riordinamento';
+                
+                // Ricarica la pagina per rimuovere i pulsanti di riordinamento
+                renderAll();
+            } else {
+                // Attiva la modalità riordinamento
+                this.classList.add('active');
+                this.classList.remove('btn-secondary');
+                this.classList.add('btn-primary');
+                this.querySelector('span').textContent = 'Disattiva Riordinamento';
+                
+                // Abilita tutte le funzionalità di riordinamento
+                enableAllReordering();
+            }
+        });
+    }
+});
+
+
     </script>
 </body>
 </html>
