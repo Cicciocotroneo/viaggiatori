@@ -1600,6 +1600,7 @@ function addEditButtonsToDays() {
                 day.activities.forEach(activity => {
                     const activityElement = document.createElement('div');
                     activityElement.classList.add('activity');
+activityElement.dataset.activityId = activity.id;  // <-- AGGIUNGI QUESTA RIGA
                     if (activity.completed) {
     const titleElement = activityElement.querySelector('.activity-title span');
     const timeElement = activityElement.querySelector('.activity-time');
