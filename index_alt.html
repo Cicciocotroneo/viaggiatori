@@ -428,38 +428,72 @@
             opacity: 0.6;
             text-decoration: line-through;
         }
+/* Stili per selezione tema */
+.theme-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.theme-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.theme-option:hover {
+    background-color: var(--light-gray);
+}
+
+.theme-preview {
+    width: 100px;
+    height: 60px;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    border: 2px solid var(--gray);
+}
+
+.default-theme {
+    background: linear-gradient(135deg, #1976d2 0%, #1565c0 50%, #ff4081 50%, #e91e63 100%);
+}
+
+.green-theme {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 50%, #ff9800 50%, #f57c00 100%);
+}
+
+.purple-theme {
+    background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 50%, #ff5722 50%, #e64a19 100%);
+}
+
+/* Stili per i temi alternativi */
+body.green-theme {
+    --primary: #4caf50;
+    --primary-dark: #388e3c;
+    --secondary: #ff9800;
+    --success: #2196f3;
+    --warning: #ff5722;
+    --error: #f44336;
+}
+
+body.purple-theme {
+    --primary: #9c27b0;
+    --primary-dark: #7b1fa2;
+    --secondary: #ff5722;
+    --success: #4caf50;
+    --warning: #ff9800;
+    --error: #f44336;
+}
 
 .activity-title span.completed,
 .activity-time.completed,
 .activity-description.completed {
     text-decoration: line-through;
     opacity: 0.6;
-}
-
-      .day-selector {
-    padding: 0.25rem;
-    border-radius: 4px;
-    border: 1px solid var(--gray);
-    font-size: 0.8rem;
-    margin-left: 0.5rem;
-}
-
-.activity-reorder-buttons {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-}
-
-@media (max-width: 768px) {
-    .activity-reorder-buttons {
-        flex-wrap: wrap;
-        gap: 0.25rem;
-    }
-    
-    .day-selector {
-        width: 100%;
-        margin-left: 0;
-    }
 }
 
 /* Mantieni lo stile originale per le note */
@@ -615,6 +649,10 @@
         <button class="btn btn-primary" onclick="exportItinerary()">
             <span>Esporta Diario</span>
         </button>
+&nbsp;&nbsp;&nbsp;
+<button class="btn btn-primary" onclick="showThemeSelector()">
+    <span>Cambia Tema</span>
+</button>
        <br> <br><hr><br>
         
         <button class="btn btn-primary" onclick="exportDataToJson()">
@@ -860,7 +898,29 @@
             </form>
         </div>
     </div>
-    
+    <!-- Modal per selezione tema -->
+<div id="theme-selector-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Seleziona Tema</h3>
+            <span class="close-modal" onclick="closeModal('theme-selector-modal')">&times;</span>
+        </div>
+        <div class="theme-options">
+            <div class="theme-option" onclick="changeTheme('default')">
+                <div class="theme-preview default-theme"></div>
+                <span>Tema Blu (Default)</span>
+            </div>
+            <div class="theme-option" onclick="changeTheme('green')">
+                <div class="theme-preview green-theme"></div>
+                <span>Tema Verde</span>
+            </div>
+            <div class="theme-option" onclick="changeTheme('purple')">
+                <div class="theme-preview purple-theme"></div>
+                <span>Tema Viola</span>
+            </div>
+        </div>
+    </div>
+</div>
     <script>
        
         // Dati dei consigli con placeholder
@@ -1067,104 +1127,95 @@ function moveDayDown(dayId) {
 function enableActivityReordering(dayId) {
     const dayElement = document.getElementById(`day-${dayId}`);
     if (!dayElement) return;
-
+    
     const activityElements = dayElement.querySelectorAll('.activity');
     
-    // Crea il menu a tendina per i giorni di destinazione
-    const daySelector = document.createElement('select');
-    daySelector.className = 'day-selector';
-    daySelector.innerHTML = itineraryData.map(day => 
-        `<option value="${day.id}">${day.title}</option>`
-    ).join('');
-
     activityElements.forEach(activity => {
         if (!activity.querySelector('.activity-reorder-buttons')) {
             const activityHeader = activity.querySelector('.activity-header');
-            const activityId = parseInt(activity.dataset.activityId || 
-                activity.querySelector('.edit-activity button').getAttribute('onclick').match(/\d+\s*,\s*(\d+)/)[1]);
-
-            // Aggiungi data-attribute per identificare facilmente l'attività
-            activity.dataset.activityId = activityId;
-
+            
             const reorderButtons = document.createElement('div');
             reorderButtons.className = 'activity-reorder-buttons';
             reorderButtons.style.display = 'flex';
             reorderButtons.style.gap = '0.5rem';
-            reorderButtons.style.alignItems = 'center';
-
-            // Pulsante Sposta su/giù
+            reorderButtons.style.flexWrap = 'wrap';
+            
+            const activityId = parseInt(activity.querySelector('.edit-activity button').getAttribute('onclick').match(/\d+\s*,\s*(\d+)/)[1]);
+            
+            // Pulsante Sposta su
             const upButton = document.createElement('button');
             upButton.className = 'btn btn-secondary';
             upButton.innerHTML = '↑';
+            upButton.style.padding = '0.25rem 0.5rem';
+            upButton.style.fontSize = '0.8rem';
             upButton.title = 'Sposta su';
             upButton.onclick = (e) => {
                 e.stopPropagation();
                 moveActivityUp(dayId, activityId);
             };
-
+            
+            // Pulsante Sposta giù
             const downButton = document.createElement('button');
             downButton.className = 'btn btn-secondary';
             downButton.innerHTML = '↓';
+            downButton.style.padding = '0.25rem 0.5rem';
+            downButton.style.fontSize = '0.8rem';
             downButton.title = 'Sposta giù';
             downButton.onclick = (e) => {
                 e.stopPropagation();
                 moveActivityDown(dayId, activityId);
             };
-
-            // Pulsante Sposta in altro giorno
-            const moveButton = document.createElement('button');
-            moveButton.className = 'btn btn-warning';
-            moveButton.innerHTML = '⇆ Sposta';
-            moveButton.title = 'Sposta in altro giorno';
-            moveButton.onclick = (e) => {
-                e.stopPropagation();
-                const targetDayId = parseInt(daySelector.value);
-                if (targetDayId !== dayId) {
-                    moveActivityToDay(dayId, activityId, targetDayId);
-                }
-            };
-
-            // Clone del selettore per ogni attività
-            const selectorClone = daySelector.cloneNode(true);
-            selectorClone.value = dayId; // Imposta come default il giorno corrente
-
+            
+            // Menu a tendina per spostare tra giorni
+            if (itineraryData.length > 1) {
+                const moveSelect = document.createElement('select');
+                moveSelect.className = 'form-control';
+                moveSelect.style.width = 'auto';
+                moveSelect.style.margin = '0 0.5rem';
+                moveSelect.innerHTML = '<option value="">Sposta in...</option>';
+                
+                itineraryData.forEach(d => {
+                    if (d.id !== dayId) {
+                        moveSelect.innerHTML += `<option value="${d.id}">${d.title}</option>`;
+                    }
+                });
+                
+                moveSelect.onchange = (e) => {
+                    if (e.target.value) {
+                        moveActivityToDay(dayId, activityId, parseInt(e.target.value));
+                        e.target.value = '';
+                    }
+                };
+                
+                reorderButtons.appendChild(moveSelect);
+            }
+            
             reorderButtons.appendChild(upButton);
             reorderButtons.appendChild(downButton);
-            reorderButtons.appendChild(selectorClone);
-            reorderButtons.appendChild(moveButton);
-
+            
             activityHeader.appendChild(reorderButtons);
         }
     });
 }
 
-function moveActivityToDay(sourceDayId, activityId, targetDayId) {
-    const sourceDay = itineraryData.find(d => d.id === sourceDayId);
-    const targetDay = itineraryData.find(d => d.id === targetDayId);
+function moveActivityToDay(fromDayId, activityId, toDayId) {
+    const fromDay = itineraryData.find(d => d.id === fromDayId);
+    const toDay = itineraryData.find(d => d.id === toDayId);
     
-    if (!sourceDay || !targetDay) return;
-
-    const activityIndex = sourceDay.activities.findIndex(a => a.id === activityId);
+    if (!fromDay || !toDay) return;
+    
+    const activityIndex = fromDay.activities.findIndex(a => a.id === activityId);
     if (activityIndex === -1) return;
-
-    // Rimuovi dall'array originale
-    const [movedActivity] = sourceDay.activities.splice(activityIndex, 1);
     
-    // Aggiungi al nuovo array
-    targetDay.activities.push(movedActivity);
+    const activity = fromDay.activities[activityIndex];
+    fromDay.activities.splice(activityIndex, 1);
+    toDay.activities.push(activity);
     
     saveToLocalStorage();
     renderDays();
-    
-    // Riabilita il riordinamento
-    if (document.getElementById('toggle-reorder-mode').classList.contains('active')) {
-        enableActivityReordering(sourceDayId);
-        enableActivityReordering(targetDayId);
-    }
-    
-    showNotification(`Attività spostata in "${targetDay.title}"`);
+    enableAllReordering();
 }
-      
+
 // Muovi un'attività verso l'alto nella lista
 function moveActivityUp(dayId, activityId) {
     const day = itineraryData.find(d => d.id === dayId);
@@ -1429,6 +1480,37 @@ function enableAllReordering() {
         }
 // Funzioni per modificare ed eliminare giorni
 
+function showThemeSelector() {
+    const modal = document.getElementById('theme-selector-modal');
+    modal.style.display = 'flex';
+}
+
+function changeTheme(themeName) {
+    // Rimuovi tutte le classi di tema
+    document.body.classList.remove('green-theme', 'purple-theme');
+    
+    if (themeName !== 'default') {
+        document.body.classList.add(`${themeName}-theme`);
+    }
+    
+    localStorage.setItem('selectedTheme', themeName);
+    closeModal('theme-selector-modal');
+    updateThemeColors();
+}
+
+function loadTheme() {
+    const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+    changeTheme(savedTheme);
+}
+
+function updateThemeColors() {
+    // Aggiorna il colore del tema per PWA
+    const themeColor = getComputedStyle(document.body).getPropertyValue('--primary').trim();
+    document.querySelector('meta[name="theme-color"]').content = themeColor;
+    updateManifest();
+}
+
+
 // Mostra la modal per modificare un giorno
 function showEditDayModal(dayId) {
     const day = itineraryData.find(d => d.id === dayId);
@@ -1600,7 +1682,6 @@ function addEditButtonsToDays() {
                 day.activities.forEach(activity => {
                     const activityElement = document.createElement('div');
                     activityElement.classList.add('activity');
-activityElement.dataset.activityId = activity.id;  // <-- AGGIUNGI QUESTA RIGA
                     if (activity.completed) {
     const titleElement = activityElement.querySelector('.activity-title span');
     const timeElement = activityElement.querySelector('.activity-time');
@@ -2260,7 +2341,7 @@ function importArchiveFromJson() {
             // Inizializza il manifest
             updateManifest();
 
-
+loadTheme(); // Aggiungi questa linea
 
 
 
@@ -2523,7 +2604,7 @@ function loadArchivedTrip(tripName) {
         );
 
         return html.join('\n');
-    } catch (error) {function
+    } catch (error) {
         console.error('Errore creazione pagina archivio:', error);
         return '<h1>Errore nel caricamento dell\'archivio</h1>';
     }
@@ -2553,5 +2634,6 @@ function openArchivePage() {
 }
 
     </script>
+
 </body>
 </html>
