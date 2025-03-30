@@ -571,6 +571,11 @@ body.purple-theme {
                 height: 48px;
                 font-size: 1.25rem;
             }
+
+/* Stile per nascondere le note */
+.hidden-notes .activity-notes {
+    display: none;
+}
         }
     </style>
 </head>
@@ -594,7 +599,9 @@ body.purple-theme {
         <section id="programma" class="section">
             <div class="section-header">
                 <h2 class="section-title">Programma del Viaggio</h2>
-         
+         <button class="btn btn-secondary" onclick="toggleAllNotes()" id="toggle-notes-btn">
+        <span>Nascondi Note</span>
+    </button>
                 </div>
             </div>
             
@@ -1036,6 +1043,17 @@ body.purple-theme {
         console.error('Errore caricamento viaggio:', error);
         showNotification('Errore nel caricamento del viaggio');
         return false;
+    }
+    
+
+   // Carica lo stato delle note
+    const savedNotesVisibility = localStorage.getItem('notesVisible');
+    if (savedNotesVisibility !== null) {
+        notesVisible = savedNotesVisibility === 'true';
+        if (!notesVisible) {
+            document.getElementById('days-container').classList.add('hidden-notes');
+            document.getElementById('toggle-notes-btn').innerHTML = '<span>Mostra Note</span>';
+        }
     }
 };
 // Funzioni per riordinare gli elementi
@@ -2394,7 +2412,25 @@ loadTheme(); // Aggiungi questa linea
                 showNotification('App avviata in modalità standalone');
             }
         });
+// Variabile per lo stato delle note
+let notesVisible = true;
 
+// Funzione per mostrare/nascondere tutte le note
+function toggleAllNotes() {
+    const daysContainer = document.getElementById('days-container');
+    notesVisible = !notesVisible;
+    
+    if (notesVisible) {
+        daysContainer.classList.remove('hidden-notes');
+        document.getElementById('toggle-notes-btn').innerHTML = '<span>Nascondi Note</span>';
+    } else {
+        daysContainer.classList.add('hidden-notes');
+        document.getElementById('toggle-notes-btn').innerHTML = '<span>Mostra Note</span>';
+    }
+    
+    // Salva lo stato nel localStorage
+    localStorage.setItem('notesVisible', notesVisible);
+}
 // Funzione per esportare tutti i dati in formato JSON
 function exportDataToJson() {
     const dataToExport = {
@@ -2511,6 +2547,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+        // Inizializza lo stato delle note
+    const savedNotesVisibility = localStorage.getItem('notesVisible');
+    if (savedNotesVisibility !== null) {
+        notesVisible = savedNotesVisibility === 'true';
+        const btn = document.getElementById('toggle-notes-btn');
+        if (btn) {
+            btn.innerHTML = notesVisible ? '<span>Nascondi Note</span>' : '<span>Mostra Note</span>';
+        }
+    }
+
 });
 // Funzione per archiviare il viaggio corrente
 function archiveCurrentTrip() {
