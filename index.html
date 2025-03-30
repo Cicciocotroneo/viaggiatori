@@ -429,6 +429,7 @@
             text-decoration: line-through;
         }
 /* Stili per selezione tema */
+/* Stili per selezione tema */
 .theme-options {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -444,10 +445,11 @@
     padding: 1rem;
     border-radius: 8px;
     transition: background-color 0.3s;
+    background-color: var(--light-gray); /* Aggiunto */
 }
 
 .theme-option:hover {
-    background-color: var(--light-gray);
+    background-color: var(--gray); /* Modificato per un hover più leggero */
 }
 
 .theme-preview {
@@ -459,18 +461,18 @@
 }
 
 .default-theme {
-    background-color: #1976d2;
+    background: linear-gradient(135deg, #1976d2 0%, #1565c0 50%, #ff4081 50%, #e91e63 100%);
 }
 
 .green-theme {
-    background-color: #4caf50;
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 50%, #ff9800 50%, #f57c00 100%);
 }
 
 .purple-theme {
-    background-color: #9c27b0;
+    background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 50%, #ff5722 50%, #e64a19 100%);
 }
 
-/* Stili per i temi alternativi */
+/* Stili per i temi alternativi - Rimuovi lo sfondo dal body */
 body.green-theme {
     --primary: #4caf50;
     --primary-dark: #388e3c;
@@ -478,8 +480,7 @@ body.green-theme {
     --success: #2196f3;
     --warning: #ff5722;
     --error: #f44336;
-    --background-color: #f5f5f5;
-    
+    background-color: var(--light-gray); /* Aggiunto */
 }
 
 body.purple-theme {
@@ -489,7 +490,7 @@ body.purple-theme {
     --success: #4caf50;
     --warning: #ff9800;
     --error: #f44336;
-    --background-color: #f5f5f5;
+    background-color: var(--light-gray); /* Aggiunto */
 }
 
 .activity-title span.completed,
@@ -1495,7 +1496,13 @@ function changeTheme(themeName) {
     if (themeName !== 'default') {
         document.body.classList.add(`${themeName}-theme`);
     }
+       // Imposta esplicitamente lo sfondo grigio
+    document.body.style.backgroundColor = 'var(--light-gray)';
     
+    localStorage.setItem('selectedTheme', themeName);
+    closeModal('theme-selector-modal');
+    updateThemeColors();
+}
     localStorage.setItem('selectedTheme', themeName);
     closeModal('theme-selector-modal');
     updateThemeColors();
@@ -1503,6 +1510,7 @@ function changeTheme(themeName) {
 
 function loadTheme() {
     const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+    document.body.style.backgroundColor = 'var(--light-gray)'; // Aggiungi questa linea
     changeTheme(savedTheme);
 }
 
