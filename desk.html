@@ -999,6 +999,19 @@ body.purple-theme {
     localStorage.setItem('descriptionsVisible', descriptionsVisible);
             showNotification('Dati salvati');
         }
+        
+function getSafeStorage() {
+     try {
+       return localStorage;
+     } catch (e) {
+       return {
+         getItem: () => null,
+         setItem: () => {},
+         removeItem: () => {}
+       };
+     }
+   }
+
 // Variabili di stato
 let notesVisible = true;
 let descriptionsVisible = true;
