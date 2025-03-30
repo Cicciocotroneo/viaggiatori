@@ -576,29 +576,6 @@ body.purple-theme {
 .hidden-notes .activity-notes {
     display: none;
 }
-            /* Stili per i pulsanti toggle */
-.toggle-buttons {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-/* Stile per nascondere descrizioni e note */
-.hidden-descriptions .activity-description {
-    display: none;
-}
-
-/* Responsive per mobile */
-@media (max-width: 768px) {
-    .toggle-buttons {
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    .toggle-buttons button {
-        width: 100%;
-    }
-}
         }
     </style>
 </head>
@@ -626,9 +603,6 @@ body.purple-theme {
          <button class="btn btn-secondary" onclick="toggleAllNotes()" id="toggle-notes-btn">
         <span>Nascondi Note</span>
     </button>
-                   <button class="btn btn-secondary" onclick="toggleAllDescriptions()" id="toggle-descriptions-btn">
-            <span>Nascondi Descrizioni</span>
-        </button>
                 </div>
             </div>
             
@@ -1939,50 +1913,7 @@ function addEditButtonsToDays() {
             const modal = document.getElementById(modalId);
             modal.style.display = 'none';
         }
-// Variabili per lo stato
-let notesVisible = true;
-let descriptionsVisible = true;
 
-// Funzione per toggle descrizioni
-function toggleAllDescriptions() {
-    const daysContainer = document.getElementById('days-container');
-    descriptionsVisible = !descriptionsVisible;
-    
-    if (descriptionsVisible) {
-        daysContainer.classList.remove('hidden-descriptions');
-        document.getElementById('toggle-descriptions-btn').innerHTML = '<span>Nascondi Descrizioni</span>';
-    } else {
-        daysContainer.classList.add('hidden-descriptions');
-        document.getElementById('toggle-descriptions-btn').innerHTML = '<span>Mostra Descrizioni</span>';
-    }
-    
-    localStorage.setItem('descriptionsVisible', descriptionsVisible);
-}
-
-// Aggiorna loadFromLocalStorage
-function loadFromLocalStorage() {
-    // ... codice esistente ...
-    
-    // Carica lo stato delle note e descrizioni
-    const savedNotesVisibility = localStorage.getItem('notesVisible');
-    const savedDescriptionsVisibility = localStorage.getItem('descriptionsVisible');
-    
-    if (savedNotesVisibility !== null) {
-        notesVisible = savedNotesVisibility === 'true';
-        if (!notesVisible) {
-            document.getElementById('days-container').classList.add('hidden-notes');
-            document.getElementById('toggle-notes-btn').innerHTML = '<span>Mostra Note</span>';
-        }
-    }
-    
-    if (savedDescriptionsVisibility !== null) {
-        descriptionsVisible = savedDescriptionsVisibility === 'true';
-        if (!descriptionsVisible) {
-            document.getElementById('days-container').classList.add('hidden-descriptions');
-            document.getElementById('toggle-descriptions-btn').innerHTML = '<span>Mostra Descrizioni</span>';
-        }
-    }
-}
         // Funzioni per la gestione dei dati
         function saveActivity() {
             const dayId = parseInt(document.getElementById('edit-day-id').value);
@@ -2626,21 +2557,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.innerHTML = notesVisible ? '<span>Nascondi Note</span>' : '<span>Mostra Note</span>';
         }
     }
-// Inizializza gli stati
-    const savedNotesVisibility = localStorage.getItem('notesVisible');
-    const savedDescriptionsVisibility = localStorage.getItem('descriptionsVisible');
-    
-    if (savedNotesVisibility !== null) {
-        notesVisible = savedNotesVisibility === 'true';
-        document.getElementById('toggle-notes-btn').innerHTML = 
-            notesVisible ? '<span>Nascondi Note</span>' : '<span>Mostra Note</span>';
-    }
-    
-    if (savedDescriptionsVisibility !== null) {
-        descriptionsVisible = savedDescriptionsVisibility === 'true';
-        document.getElementById('toggle-descriptions-btn').innerHTML = 
-            descriptionsVisible ? '<span>Nascondi Descrizioni</span>' : '<span>Mostra Descrizioni</span>';
-    }
+
 });
 // Funzione per archiviare il viaggio corrente
 function archiveCurrentTrip() {
