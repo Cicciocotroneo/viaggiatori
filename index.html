@@ -429,7 +429,6 @@
             text-decoration: line-through;
         }
 /* Stili per selezione tema */
-/* Stili per selezione tema */
 .theme-options {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -445,11 +444,11 @@
     padding: 1rem;
     border-radius: 8px;
     transition: background-color 0.3s;
-    background-color: var(--light-gray); /* Aggiunto */
+      background-color: var(--light-gray); /* Aggiunto */
 }
 
 .theme-option:hover {
-    background-color: var(--gray); /* Modificato per un hover più leggero */
+    background-color: var(--light-gray);
 }
 
 .theme-preview {
@@ -472,7 +471,7 @@
     background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 50%, #ff5722 50%, #e64a19 100%);
 }
 
-/* Stili per i temi alternativi - Rimuovi lo sfondo dal body */
+/* Stili per i temi alternativi */
 body.green-theme {
     --primary: #4caf50;
     --primary-dark: #388e3c;
@@ -480,7 +479,7 @@ body.green-theme {
     --success: #2196f3;
     --warning: #ff5722;
     --error: #f44336;
-    background-color: var(--light-gray); /* Aggiunto */
+     background-color: var(--light-gray); /* Aggiunto */
 }
 
 body.purple-theme {
@@ -490,7 +489,7 @@ body.purple-theme {
     --success: #4caf50;
     --warning: #ff9800;
     --error: #f44336;
-    background-color: var(--light-gray); /* Aggiunto */
+ background-color: var(--light-gray); /* Aggiunto */
 }
 
 .activity-title span.completed,
@@ -1496,13 +1495,7 @@ function changeTheme(themeName) {
     if (themeName !== 'default') {
         document.body.classList.add(`${themeName}-theme`);
     }
-       // Imposta esplicitamente lo sfondo grigio
-    document.body.style.backgroundColor = 'var(--light-gray)';
     
-    localStorage.setItem('selectedTheme', themeName);
-    closeModal('theme-selector-modal');
-    updateThemeColors();
-}
     localStorage.setItem('selectedTheme', themeName);
     closeModal('theme-selector-modal');
     updateThemeColors();
@@ -1510,7 +1503,6 @@ function changeTheme(themeName) {
 
 function loadTheme() {
     const savedTheme = localStorage.getItem('selectedTheme') || 'default';
-    document.body.style.backgroundColor = 'var(--light-gray)'; // Aggiungi questa linea
     changeTheme(savedTheme);
 }
 
