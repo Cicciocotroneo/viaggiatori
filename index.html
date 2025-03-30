@@ -576,6 +576,22 @@ body.purple-theme {
 .hidden-notes .activity-notes {
     display: none;
 }
+#toggle-notes-btn {
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 1;
+}
+
+/* Assicurati che non ci siano media query che nascondono il pulsante su desktop */
+@media (min-width: 769px) {
+    #toggle-notes-btn {
+        /* Resetta eventuali stili specifici per desktop */
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+}
+
+
         }
     </style>
 </head>
@@ -600,9 +616,9 @@ body.purple-theme {
         <section id="programma" class="section">
             <div class="section-header">
                 <h2 class="section-title">Programma del Viaggio</h2>
-         <button class="btn btn-secondary" onclick="toggleAllNotes()" id="toggle-notes-btn">
-        <span>Nascondi Note</span>
-    </button>
+         <button class="btn btn-secondary" onclick="return toggleAllNotes(event)" id="toggle-notes-btn">
+    <span>Nascondi Note</span>
+</button>
                 </div>
             </div>
             
@@ -2431,6 +2447,34 @@ function toggleAllNotes() {
     
     // Salva lo stato nel localStorage
     localStorage.setItem('notesVisible', notesVisible);
+    
+// Aggiungi questo per debug
+    console.log('Toggle notes called');
+    if (event) {
+        event.stopPropagation(); // Previene la propagazione
+        event.preventDefault(); // Previene comportamenti default
+    }
+    
+    const daysContainer = document.getElementById('days-container');
+    if (!daysContainer) {
+        console.error('Days container not found!');
+        return;
+    }
+    
+    notesVisible = !notesVisible;
+    
+    // Modifica questo blocco per maggiore robustezza
+    const btn = document.getElementById('toggle-notes-btn');
+    if (daysContainer && btn) {
+        if (notesVisible) {
+            daysContainer.classList.remove('hidden-notes');
+            btn.innerHTML = '<span>Nascondi Note</span>';
+        } else {
+            daysContainer.classList.add('hidden-notes');
+            btn.innerHTML = '<span>Mostra Note</span>';
+        }
+        localStorage.setItem('notesVisible', notesVisible);
+    }
 }
 // Funzione per esportare tutti i dati in formato JSON
 function exportDataToJson() {
