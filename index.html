@@ -536,6 +536,11 @@ body.purple-theme {
             font-size: 0.8rem;
         }
         
+.hidden-notes .activity-notes,
+.hidden-descriptions .activity-description {
+    display: none;
+}
+
         @media (max-width: 768px) {
             .header-container {
                 flex-direction: column;
@@ -572,10 +577,7 @@ body.purple-theme {
                 font-size: 1.25rem;
             }
 
-.hidden-notes .activity-notes,
-.hidden-descriptions .activity-description {
-    display: none;
-}
+
 
 .section-header > div {
     display: flex;
@@ -997,6 +999,19 @@ body.purple-theme {
     localStorage.setItem('descriptionsVisible', descriptionsVisible);
             showNotification('Dati salvati');
         }
+        
+function getSafeStorage() {
+     try {
+       return localStorage;
+     } catch (e) {
+       return {
+         getItem: () => null,
+         setItem: () => {},
+         removeItem: () => {}
+       };
+     }
+   }
+
 // Variabili di stato
 let notesVisible = true;
 let descriptionsVisible = true;
