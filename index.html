@@ -207,12 +207,6 @@
             font-style: italic;
             white-space: pre-line; /* Preserva gli spazi e le interruzioni di riga */
         }
-
-  .activity-notes.hidden {
-    display: none !important;
-    background: red !important; /* Solo per debug */
-    border: 2px solid red !important; /* Solo per debug */
-}
         
         .tips-list {
             padding-left: 1.5rem;
@@ -579,7 +573,9 @@ body.purple-theme {
             }
 
 /* Stile per nascondere le note */
-
+.hidden-notes .activity-notes {
+    display: none;
+}
         }
     </style>
 </head>
@@ -1052,23 +1048,14 @@ body.purple-theme {
     
 
    // Carica lo stato delle note
-   const savedNotesVisibility = localStorage.getItem('notesVisible');
+    const savedNotesVisibility = localStorage.getItem('notesVisible');
     if (savedNotesVisibility !== null) {
         notesVisible = savedNotesVisibility === 'true';
-        const notes = document.querySelectorAll('.activity-notes');
-        const btn = document.getElementById('toggle-notes-btn');
-        
-        if (btn) {
-            notes.forEach(note => {
-                if (notesVisible) {
-                    note.classList.remove('hidden');
-                } else {
-                    note.classList.add('hidden');
-                }
-            });
-            
-            btn.innerHTML = notesVisible ? '<span>Nascondi Note</span>' : '<span>Mostra Note</span>';
+        if (!notesVisible) {
+            document.getElementById('days-container').classList.add('hidden-notes');
+            document.getElementById('toggle-notes-btn').innerHTML = '<span>Mostra Note</span>';
         }
+    }
 };
 // Funzioni per riordinare gli elementi
 
@@ -2431,21 +2418,16 @@ let notesVisible = true;
 
 // Funzione per mostrare/nascondere tutte le note
 function toggleAllNotes() {
+    const daysContainer = document.getElementById('days-container');
     notesVisible = !notesVisible;
-    const notes = document.querySelectorAll('.activity-notes');
-    const btn = document.getElementById('toggle-notes-btn');
-
-    notes.forEach(note => {
-        if (notesVisible) {
-            note.classList.remove('hidden');
-        } else {
-            note.classList.add('hidden');
-        }
-    });
-
-    btn.innerHTML = notesVisible ? '<span>Nascondi Note</span>' : '<span>Mostra Note</span>';
-    localStorage.setItem('notesVisible', notesVisible);
-}
+    
+    if (notesVisible) {
+        daysContainer.classList.remove('hidden-notes');
+        document.getElementById('toggle-notes-btn').innerHTML = '<span>Nascondi Note</span>';
+    } else {
+        daysContainer.classList.add('hidden-notes');
+        document.getElementById('toggle-notes-btn').innerHTML = '<span>Mostra Note</span>';
+    }
     
     // Salva lo stato nel localStorage
     localStorage.setItem('notesVisible', notesVisible);
