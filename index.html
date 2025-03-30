@@ -207,6 +207,12 @@
             font-style: italic;
             white-space: pre-line; /* Preserva gli spazi e le interruzioni di riga */
         }
+
+  .activity-notes.hidden {
+    display: none !important;
+    background: red !important; /* Solo per debug */
+    border: 2px solid red !important; /* Solo per debug */
+}
         
         .tips-list {
             padding-left: 1.5rem;
@@ -573,24 +579,6 @@ body.purple-theme {
             }
 
 /* Stile per nascondere le note */
-.hidden-notes .activity-notes {
-    display: none;
-}
-#toggle-notes-btn {
-    pointer-events: auto !important;
-    position: relative;
-    z-index: 1;
-}
-
-/* Assicurati che non ci siano media query che nascondono il pulsante su desktop */
-@media (min-width: 769px) {
-    #toggle-notes-btn {
-        /* Resetta eventuali stili specifici per desktop */
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-}
-
 
         }
     </style>
@@ -616,9 +604,9 @@ body.purple-theme {
         <section id="programma" class="section">
             <div class="section-header">
                 <h2 class="section-title">Programma del Viaggio</h2>
-         <button class="btn btn-secondary" onclick="return toggleAllNotes(event)" id="toggle-notes-btn">
-    <span>Nascondi Note</span>
-</button>
+         <button class="btn btn-secondary" onclick="toggleAllNotes()" id="toggle-notes-btn">
+        <span>Nascondi Note</span>
+    </button>
                 </div>
             </div>
             
@@ -1064,14 +1052,23 @@ body.purple-theme {
     
 
    // Carica lo stato delle note
-    const savedNotesVisibility = localStorage.getItem('notesVisible');
+   const savedNotesVisibility = localStorage.getItem('notesVisible');
     if (savedNotesVisibility !== null) {
         notesVisible = savedNotesVisibility === 'true';
-        if (!notesVisible) {
-            document.getElementById('days-container').classList.add('hidden-notes');
-            document.getElementById('toggle-notes-btn').innerHTML = '<span>Mostra Note</span>';
+        const notes = document.querySelectorAll('.activity-notes');
+        const btn = document.getElementById('toggle-notes-btn');
+        
+        if (btn) {
+            notes.forEach(note => {
+                if (notesVisible) {
+                    note.classList.remove('hidden');
+                } else {
+                    note.classList.add('hidden');
+                }
+            });
+            
+            btn.innerHTML = notesVisible ? '<span>Nascondi Note</span>' : '<span>Mostra Note</span>';
         }
-    }
 };
 // Funzioni per riordinare gli elementi
 
@@ -2434,47 +2431,24 @@ let notesVisible = true;
 
 // Funzione per mostrare/nascondere tutte le note
 function toggleAllNotes() {
-    const daysContainer = document.getElementById('days-container');
     notesVisible = !notesVisible;
-    
-    if (notesVisible) {
-        daysContainer.classList.remove('hidden-notes');
-        document.getElementById('toggle-notes-btn').innerHTML = '<span>Nascondi Note</span>';
-    } else {
-        daysContainer.classList.add('hidden-notes');
-        document.getElementById('toggle-notes-btn').innerHTML = '<span>Mostra Note</span>';
-    }
+    const notes = document.querySelectorAll('.activity-notes');
+    const btn = document.getElementById('toggle-notes-btn');
+
+    notes.forEach(note => {
+        if (notesVisible) {
+            note.classList.remove('hidden');
+        } else {
+            note.classList.add('hidden');
+        }
+    });
+
+    btn.innerHTML = notesVisible ? '<span>Nascondi Note</span>' : '<span>Mostra Note</span>';
+    localStorage.setItem('notesVisible', notesVisible);
+}
     
     // Salva lo stato nel localStorage
     localStorage.setItem('notesVisible', notesVisible);
-    
-// Aggiungi questo per debug
-    console.log('Toggle notes called');
-    if (event) {
-        event.stopPropagation(); // Previene la propagazione
-        event.preventDefault(); // Previene comportamenti default
-    }
-    
-    const daysContainer = document.getElementById('days-container');
-    if (!daysContainer) {
-        console.error('Days container not found!');
-        return;
-    }
-    
-    notesVisible = !notesVisible;
-    
-    // Modifica questo blocco per maggiore robustezza
-    const btn = document.getElementById('toggle-notes-btn');
-    if (daysContainer && btn) {
-        if (notesVisible) {
-            daysContainer.classList.remove('hidden-notes');
-            btn.innerHTML = '<span>Nascondi Note</span>';
-        } else {
-            daysContainer.classList.add('hidden-notes');
-            btn.innerHTML = '<span>Mostra Note</span>';
-        }
-        localStorage.setItem('notesVisible', notesVisible);
-    }
 }
 // Funzione per esportare tutti i dati in formato JSON
 function exportDataToJson() {
