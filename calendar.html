@@ -1764,42 +1764,70 @@ function addToGoogleCalendar(dayId, activityId) {
         'settembre': '09', 'ottobre': '10', 'novembre': '11', 'dicembre': '12'
     };
 
-    // Formato base YYYYMMDD
-    const baseDate = `${year}${months[monthName.toLowerCase()]}${dayNumber.padStart(2, '0')}`;
+    // Formattazione data base
+    const pad = n => n.padStart(2, '0');
+    const baseDate = `${year}${months[monthName.toLowerCase()]}${pad(dayNumber)}`;
     
-    // Gestione orari con regex migliorata
-    const timePattern = /(\d{1,2}:\d{2})/g;
-    const times = activity.time ? activity.time.match(timePattern) || [] : [];
-    const [start = '00:00', end = '23:59'] = times;
-    
-    // Formato Google Calendar (YYYYMMDDTHHmmss)
-    const startDateTime = `${baseDate}T${start.replace(':', '')}00`;
-    const endDateTime = `${baseDate}T${end.replace(':', '')}00`;
+    // Funzione per convertire gli orari nel formato HH:mm
+    const parseTime = (timeStr) => {
+        if (!timeStr) return { hours: 0, minutes: 0 };
+        
+        // Sostituisce i punti con i due punti e rimuove spazi
+        const cleaned = timeStr.replace(/\./g, ':').replace(/\s/g, '');
+        const [hours, minutes] = cleaned.split(':').slice(0, 2);
+        
+        return {
+            hours: Math.min(23, parseInt(hours) || 0),
+            minutes: Math.min(59, parseInt(minutes) || 0)
+        };
+    };
 
-    // Costruzione URL sicura
+    // Gestione orari
+    let start = { hours: 0, minutes: 0 };
+    let end = { hours: 23, minutes: 59 };
+    
+    if (activity.time) {
+        const [startStr, endStr] = activity.time.split(/-|–/).map(s => s.trim());
+        start = parseTime(startStr);
+        
+        if (endStr) {
+            end = parseTime(endStr);
+        } else {
+            // Default 15 minuti se c'è solo l'orario iniziale
+            end = { ...start };
+            end.minutes += 15;
+            if (end.minutes >= 60) {
+                end.hours++;
+                end.minutes -= 60;
+            }
+        }
+    }
+
+    // Costruzione timestamp ISO
+    const timeToISO = (date, time) => {
+        const d = new Date(
+            `${year}-${months[monthName.toLowerCase()]}-${pad(dayNumber)}T${pad(time.hours.toString())}:${pad(time.minutes.toString())}:00`
+        );
+        return d.toISOString().replace(/[-:]/g, '').split('.')[0];
+    };
+
+    const startDateTime = timeToISO(baseDate, start);
+    const endDateTime = timeToISO(baseDate, end);
+
+    // Costruzione URL
     const params = new URLSearchParams({
         action: 'TEMPLATE',
         text: activity.title,
         dates: `${startDateTime}/${endDateTime}`,
         details: `${activity.description || ''}\n\nNote: ${activity.notes || 'Nessuna nota'}`,
-        location: '',
         sf: true,
         output: 'xml'
     });
 
-    const calendarUrl = `https://calendar.google.com/calendar/render?${params.toString()}`;
+    const calendarUrl = `https://calendar.google.com/calendar/render?${params}`;
     
-    // Apertura in nuova scheda in modo sicuro
-    const link = document.createElement('a');
-    link.href = calendarUrl;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    document.body.appendChild(link);
-    link.style.display = 'none';
-showNotification('Apertura di Google Calendar...');
-    link.click();
-    document.body.removeChild(link);
-    setTimeout(() => showNotification(''), 2000);
+    // Apertura in nuova scheda
+    window.open(calendarUrl, '_blank', 'noopener,noreferrer');
 }
 
         // Funzioni di rendering
