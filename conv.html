@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertitore HTML/Markdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: monospace;
+        }
+        .controls {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        select {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .output-container {
+            margin-top: 20px;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Convertitore HTML ↔ Markdown</h1>
+        
+        <div class="controls">
+            <select id="conversionType">
+                <option value="htmlToMarkdown">Converti HTML a Markdown</option>
+                <option value="markdownToHtml">Converti Markdown a HTML</option>
+            </select>
+            <button id="convertBtn">Converti</button>
+            <button id="clearBtn">Pulisci</button>
+        </div>
+        
+        <textarea id="inputText" placeholder="Inserisci qui il tuo testo..."></textarea>
+        
+        <div class="output-container">
+            <h3>Risultato:</h3>
+            <textarea id="outputText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputText = document.getElementById('inputText');
+            const outputText = document.getElementById('outputText');
+            const convertBtn = document.getElementById('convertBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const conversionType = document.getElementById('conversionType');
+            
+            convertBtn.addEventListener('click', convertText);
+            clearBtn.addEventListener('click', clearText);
+            
+            function convertText() {
+                const text = inputText.value;
+                const type = conversionType.value;
+                
+                if (type === 'htmlToMarkdown') {
+                    outputText.value = convertHtmlToMarkdown(text);
+                } else {
+                    outputText.value = convertMarkdownToHtml(text);
+                }
+            }
+            
+            function clearText() {
+                inputText.value = '';
+                outputText.value = '';
+            }
+            
+            function convertHtmlToMarkdown(html) {
+                // Converti headings
+                let markdown = html.replace(/<h1>(.*?)<\/h1>/gi, '# $1\n');
+                markdown = markdown.replace(/<h2>(.*?)<\/h2>/gi, '## $1\n');
+                markdown = markdown.replace(/<h3>(.*?)<\/h3>/gi, '### $1\n');
+                markdown = markdown.replace(/<h4>(.*?)<\/h4>/gi, '#### $1\n');
+                markdown = markdown.replace(/<h5>(.*?)<\/h5>/gi, '##### $1\n');
+                markdown = markdown.replace(/<h6>(.*?)<\/h6>/gi, '###### $1\n');
+                
+                // Converti link <a href="...">testo</a> a [testo](URL)
+                markdown = markdown.replace(/<a\s+href=["']([^"']+)["'][^>]*>(.*?)<\/a>/gi, '[$2]($1)');
+                
+                // Converti liste non ordinate
+                markdown = markdown.replace(/<ul>\s*<li>(.*?)<\/li>\s*<\/ul>/g, '- $1');
+                markdown = markdown.replace(/<ul>\s*<li>(.*?)<\/li>\s*(<li>.*?<\/li>\s*)*<\/ul>/g, function(match) {
+                    return match.replace(/<li>(.*?)<\/li>/g, '- $1').replace(/<\/?ul>/g, '');
+                });
+                
+                // Converti liste ordinate
+                markdown = markdown.replace(/<ol>\s*<li>(.*?)<\/li>\s*<\/ol>/g, '1. $1');
+                markdown = markdown.replace(/<ol>\s*<li>(.*?)<\/li>\s*(<li>.*?<\/li>\s*)*<\/ol>/g, function(match) {
+                    let counter = 1;
+                    return match.replace(/<li>(.*?)<\/li>/g, function(liMatch, content) {
+                        return counter++ + '. ' + content;
+                    }).replace(/<\/?ol>/g, '');
+                });
+                
+                // Converti immagini <img src="..." alt="..."> a ![alt](src)
+                markdown = markdown.replace(/<img\s+src=["']([^"']+)["']\s+alt=["']([^"']*)["'][^>]*>/gi, '![$2]($1)');
+                
+                // Converti grassetto e corsivo
+                markdown = markdown.replace(/<strong>(.*?)<\/strong>/gi, '**$1**');
+                markdown = markdown.replace(/<b>(.*?)<\/b>/gi, '**$1**');
+                markdown = markdown.replace(/<em>(.*?)<\/em>/gi, '*$1*');
+                markdown = markdown.replace(/<i>(.*?)<\/i>/gi, '*$1*');
+                
+                // Converti codice inline
+                markdown = markdown.replace(/<code>(.*?)<\/code>/gi, '`$1`');
+                
+                // Rimuovi eventuali tag rimanenti (semplificato)
+                markdown = markdown.replace(/<\/?[^>]+(>|$)/g, '');
+                
+                // Pulisci spazi multipli e newline
+                markdown = markdown.replace(/\n{3,}/g, '\n\n');
+                
+                return markdown.trim();
+            }
+            
+            function convertMarkdownToHtml(markdown) {
+                // Converti headings
+                let html = markdown.replace(/^#\s(.*)$/gm, '<h1>$1</h1>');
+                html = html.replace(/^##\s(.*)$/gm, '<h2>$1</h2>');
+                html = html.replace(/^###\s(.*)$/gm, '<h3>$1</h3>');
+                html = html.replace(/^####\s(.*)$/gm, '<h4>$1</h4>');
+                html = html.replace(/^#####\s(.*)$/gm, '<h5>$1</h5>');
+                html = html.replace(/^######\s(.*)$/gm, '<h6>$1</h6>');
+                
+                // Converti link [testo](URL) a <a href="URL">testo</a>
+                html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+                
+                // Converti immagini ![alt](src) a <img src="src" alt="alt">
+                html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+                
+                // Converti liste non ordinate
+                html = html.replace(/^\s*-\s(.*)$/gm, '<li>$1</li>');
+                html = html.replace(/(<li>.*<\/li>\n?)+/g, function(match) {
+                    return '<ul>\n' + match + '</ul>';
+                });
+                
+                // Converti liste ordinate
+                html = html.replace(/^\s*\d+\.\s(.*)$/gm, '<li>$1</li>');
+                html = html.replace(/(<li>.*<\/li>\n?)+/g, function(match) {
+                    return '<ol>\n' + match + '</ol>';
+                });
+                
+                // Converti altri elementi Markdown
+                html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+                
+                // Mantieni i paragrafi
+                html = html.replace(/(^(?!<[a-z][^>]*>).*$)/gm, function(match) {
+                    if (match.trim() === '') return '';
+                    if (!match.startsWith('<')) return '<p>' + match + '</p>';
+                    return match;
+                });
+                
+                return html;
+            }
+        });
+    </script>
+</body>
+</html>
