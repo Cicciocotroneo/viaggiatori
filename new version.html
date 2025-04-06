@@ -491,6 +491,10 @@
     background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 50%, #ff5722 50%, #e64a19 100%);
 }
 
+.gray-theme {
+    background: linear-gradient(135deg, #757575 0%, #9e9e9e 50%, #e0e0e0 50%, #f5f5f5 100%);
+}
+	    
 /* Stili per i temi alternativi */
 body.green-theme {
     --primary: #4caf50;
@@ -512,6 +516,65 @@ body.purple-theme {
  background-color: var(--light-gray); /* Aggiunto */
 }
 
+body.gray-theme {
+    --primary: #757575;
+    --primary-dark: #616161;
+    --secondary: #9e9e9e;
+    --success: #a5a5a5;
+    --warning: #9e9e9e;
+    --error: #757575;
+    background-color: #ffffff;
+}
+
+	    /* Personalizzazioni specifiche per il tema grigio */
+body.gray-theme .section {
+    background-color: var(--white);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+body.gray-theme .day-header {
+    background-color: #f5f5f5;
+    color: var(--black);
+    border-left: 4px solid var(--primary);
+}
+
+body.gray-theme .activity {
+    background-color: #fafafa;
+    border-left: 2px solid #e0e0e0;
+}
+
+body.gray-theme .btn-primary {
+    background-color: #757575;
+}
+
+body.gray-theme .btn-primary:hover {
+    background-color: #616161;
+}
+
+body.gray-theme .btn-secondary {
+    background-color: #9e9e9e;
+}
+
+body.gray-theme .btn-secondary:hover {
+    background-color: #757575;
+}
+
+body.gray-theme .section-title {
+    color: #616161;
+}
+
+body.gray-theme header {
+    background-color: #757575;
+}
+
+body.gray-theme .fab-primary {
+    background-color: #757575;
+}
+
+body.gray-theme .fab-primary:hover {
+    background-color: #616161;
+}
+	    
 .activity-title span.completed,
 .activity-time.completed,
 .activity-description.completed {
@@ -610,120 +673,7 @@ section[id] {
     gap: 0.5rem;
 }
         }
-        /* Stili per il contenuto Markdown */
-.activity-description h1, .activity-notes h1,
-.tip-item span h1 {
-    font-size: 1.4rem;
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-}
-
-.activity-description h2, .activity-notes h2,
-.tip-item span h2 {
-    font-size: 1.3rem;
-    margin-top: 0.8rem;
-    margin-bottom: 0.4rem;
-}
-
-.activity-description h3, .activity-notes h3,
-.tip-item span h3 {
-    font-size: 1.2rem;
-    margin-top: 0.6rem;
-    margin-bottom: 0.3rem;
-}
-
-.activity-description p, .activity-notes p,
-.tip-item span p {
-    margin-bottom: 0.8rem;
-}
-
-.activity-description ul, .activity-notes ul,
-.tip-item span ul,
-.activity-description ol, .activity-notes ol,
-.tip-item span ol {
-    padding-left: 2rem;
-    margin-bottom: 0.8rem;
-}
-
-.activity-description code, .activity-notes code,
-.tip-item span code {
-    background-color: #f0f0f0;
-    padding: 2px 4px;
-    border-radius: 3px;
-    font-family: monospace;
-}
-
-.activity-description pre, .activity-notes pre,
-.tip-item span pre {
-    background-color: #f0f0f0;
-    padding: 0.5rem;
-    border-radius: 4px;
-    overflow-x: auto;
-    margin-bottom: 0.8rem;
-}
-
-.activity-description blockquote, .activity-notes blockquote,
-.tip-item span blockquote {
-    border-left: 4px solid var(--primary);
-    padding-left: 1rem;
-    margin-left: 0;
-    color: var(--dark-gray);
-}
-
-.activity-description img, .activity-notes img,
-.tip-item span img {
-    max-width: 100%;
-    height: auto;
-}
-
-.activity-description a, .activity-notes a,
-.tip-item span a {
-    color: var(--primary);
-    text-decoration: underline;
-}
-
-/* Mantieni i link cliccabili anche quando l'attività è completata */
-.activity-description.completed a, 
-.activity-notes a {
-    opacity: 1;
-    text-decoration: underline;
-}
-
-/* Stile tabelle Markdown */
-.activity-description table, .activity-notes table,
-.tip-item span table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 1rem;
-}
-
-.activity-description th, .activity-notes th,
-.tip-item span th,
-.activity-description td, .activity-notes td,
-.tip-item span td {
-    border: 1px solid var(--gray);
-    padding: 8px;
-    text-align: left;
-}
-
-.activity-description th, .activity-notes th,
-.tip-item span th {
-    background-color: var(--light-gray);
-}
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
-    <script>
-    // Configura marked.js
-    marked.setOptions({
-        breaks: true,        // Converte i ritorni a capo in <br>
-        gfm: true,           // Supporta GitHub Flavored Markdown
-        headerIds: false,    // Disabilita gli ID degli header
-        sanitize: false,     // HTML è permesso
-        smartLists: true,    // Liste più belle
-        smartypants: true,   // Tipografia migliorata (virgolette, trattini)
-        xhtml: false         // Non usare XHTML
-    });
-</script>
 </head>
 <body>
     <header>
@@ -895,25 +845,7 @@ section[id] {
                     <label class="form-label" for="edit-activity-notes">Note Personali</label>
                     <textarea class="form-control" id="edit-activity-notes" rows="3" placeholder="Aggiungi le tue note personali qui..."></textarea>
                 </div>
-                <div class="form-group">
-    <details style="margin-top: 0.5rem; margin-bottom: 1rem;">
-        <summary style="cursor: pointer; color: var(--primary);">Sintassi Markdown supportata</summary>
-        <div style="background-color: var(--light-gray); padding: 1rem; border-radius: 4px; margin-top: 0.5rem;">
-            <p><strong>Formattazione base:</strong></p>
-            <ul style="padding-left: 1.5rem;">
-                <li><code>**grassetto**</code> per <strong>grassetto</strong></li>
-                <li><code>*corsivo*</code> per <em>corsivo</em></li>
-                <li><code>[Link](https://example.com)</code> per <a href="#">link</a></li>
-                <li><code>- elemento</code> per liste puntate</li>
-                <li><code>1. elemento</code> per liste numerate</li>
-                <li><code># Titolo</code> per titoli</li>
-                <li><code>## Sottotitolo</code> per sottotitoli</li>
-                <li><code>![Alt text](URL immagine)</code> per immagini</li>
-                <li><code>`codice`</code> per <code>codice inline</code></li>
-            </ul>
-        </div>
-    </details>
-</div>
+                
                 <div class="modal-actions">
                     <button type="button" class="btn btn-error" onclick="deleteActivity()">Elimina</button>
                     <button type="button" class="btn btn-primary" onclick="saveActivity()">Salva</button>
@@ -1094,6 +1026,7 @@ section[id] {
                 <div class="theme-preview default-theme"></div>
                 <span>Tema Blu (Default)</span>
             </div>
+		
             <div class="theme-option" onclick="changeTheme('green')">
                 <div class="theme-preview green-theme"></div>
                 <span>Tema Verde</span>
@@ -1102,6 +1035,10 @@ section[id] {
                 <div class="theme-preview purple-theme"></div>
                 <span>Tema Viola</span>
             </div>
+		<div class="theme-option" onclick="changeTheme('gray')">
+    <div class="theme-preview gray-theme"></div>
+    <span>Tema Grigio (Minimal)</span>
+</div>
         </div>
     </div>
 </div>
@@ -1716,7 +1653,7 @@ function showThemeSelector() {
 
 function changeTheme(themeName) {
     // Rimuovi tutte le classi di tema
-    document.body.classList.remove('green-theme', 'purple-theme');
+    document.body.classList.remove('green-theme', 'purple-theme', 'gray-theme');
     
     if (themeName !== 'default') {
         document.body.classList.add(`${themeName}-theme`);
@@ -1988,9 +1925,6 @@ function addToGoogleCalendar(dayId, activityId) {
                         // Permette l'uso di tag HTML ma sanitizza per sicurezza
                         // Converte i ritorni a capo in <br> solo se non sono già in un tag HTML
                         return text.replace(/\n/g, '<br>');
-                            if (!text) return '';
-    // Converti il testo Markdown in HTML usando marked
-    return marked.parse(text);
                     }
                     
                     // Dentro la funzione renderDays, modifica la variabile activityContent
@@ -2008,7 +1942,7 @@ const activityContent = `
     ${activity.notes ? `<div class="activity-notes">${processText(activity.notes)}</div>` : ''}
     <div class="edit-activity">
         <button class="btn btn-google" onclick="addToGoogleCalendar(${day.id}, ${activity.id})">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAuIwAALiMBeKU/dgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADsSURBVDiNpZMxSkNBEIW/2TWGIBYiFha2WvkDFrYWNrZaWYilfoGFjYW1jYWKjWBnI4iCqJWKQdTd2Y3FPFhWX14S8MDA3Hkzc2fujPwrKoBz4BQY9HlroAucACvV9gQYAjfAFNgDDoEX4B5Yr6u6wCtw1LN3gGdgA3jPzBQzSQK2gC/gV1IzM1PgF/gpCaqkqgJmJX0i0sxMgE3gOyKq7WZmVtJXgHVgVhNU0jPwAaxFxEtmDgEi4hFYBk4j4q4miIhLYBE4i4jbmiAiLgELwEtmPtJXgK/AQMvMf/AE6TZ7MU+9+7AAAAABJRU5ErkJggg==" class="google-icon">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAuIwAALiMBeKU/dgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADsSURBVDiNpZMxSkNBEIW/2TWGIBYiFha2WvkDFrYWNrZaWYilfoGFjYW1jYWKjWBnI4iCqJWKQdTd2Y3FPFhWX14S8MDA3Hkzc2fujPwrKoBz4BQY9HlroAucACvV9gQYAjfAFNgDDoEX4B5Yr6u6wCtw1LN3gGdgA3jPzBQzSQK2gC/gV1IzM1PgF/gpCaqkqgJmJX0i0sxMgE3gOyKq7WZmVtJXgHVgVhNU0jPwAaxFxEtmDgEi4hFYBk4j4q4miIhLYBE4i4jbmiAiLoAF4CIibmqCiLgC5oGrMvMf/AE6TZ7MU+8+7AAAAABJRU5ErkJggg==" class="google-icon">
             Aggiungi a Google Calendar
         </button>
         <button class="btn btn-primary" onclick="showEditActivityModal(${day.id}, ${activity.id})">Modifica</button>
@@ -2054,26 +1988,26 @@ const activityContent = `
         }
         
         function renderTipCategory(containerId, tipsData) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    
-    tipsData.forEach((tip, index) => {
-        const tipElement = document.createElement('li');
-        tipElement.classList.add('tip-item');
-        tipElement.innerHTML = `
-            <span>${processText(tip)}</span>
-            <button class="btn btn-primary" onclick="showEditTipModal('${containerId.replace('tips-', '')}', ${index})">Modifica</button>
-        `;
-        container.appendChild(tipElement);
-    });
-    
-    // Aggiunge un messaggio se non ci sono consigli
-    if (tipsData.length === 0) {
-        const emptyTipElement = document.createElement('li');
-        emptyTipElement.textContent = "Nessun consiglio aggiunto. Usa il pulsante qui sotto per aggiungerne uno.";
-        container.appendChild(emptyTipElement);
-    }
-}
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            tipsData.forEach((tip, index) => {
+                const tipElement = document.createElement('li');
+                tipElement.classList.add('tip-item');
+                tipElement.innerHTML = `
+                    <span>${tip}</span>
+                    <button class="btn btn-primary" onclick="showEditTipModal('${containerId.replace('tips-', '')}', ${index})">Modifica</button>
+                `;
+                container.appendChild(tipElement);
+            });
+            
+            // Aggiunge un messaggio se non ci sono consigli
+            if (tipsData.length === 0) {
+                const emptyTipElement = document.createElement('li');
+                emptyTipElement.textContent = "Nessun consiglio aggiunto. Usa il pulsante qui sotto per aggiungerne uno.";
+                container.appendChild(emptyTipElement);
+            }
+        }
 
         function renderEmergencyNumbers() {
             const emergencyContainer = document.getElementById('emergency-container');
