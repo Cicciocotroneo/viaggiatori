@@ -1942,7 +1942,7 @@ const activityContent = `
     ${activity.notes ? `<div class="activity-notes">${processText(activity.notes)}</div>` : ''}
     <div class="edit-activity">
         <button class="btn btn-google" onclick="addToGoogleCalendar(${day.id}, ${activity.id})">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAuIwAALiMBeKU/dgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADsSURBVDiNpZMxSkNBEIW/2TWGIBYiFha2WvkDFrYWNrZaWYilfoGFjYW1jYWKjWBnI4iCqJWKQdTd2Y3FPFhWX14S8MDA3Hkzc2fujPwrKoBz4BQY9HlroAucACvV9gQYAjfAFNgDDoEX4B5Yr6u6wCtw1LN3gGdgA3jPzBQzSQK2gC/gV1IzM1PgF/gpCaqkqgJmJX0i0sxMgE3gOyKq7WZmVtJXgHVgVhNU0jPwAaxFxEtmDgEi4hFYBk4j4q4miIhLYBE4i4jbmiAiLoAF4CIibmqCiLgC5oGrMvMf/AE6TZ7MU+8+7AAAAABJRU5ErkJggg==" class="google-icon">
+            <img src="calendar_blank.png" class="google-icon">
             Aggiungi a Google Calendar
         </button>
         <button class="btn btn-primary" onclick="showEditActivityModal(${day.id}, ${activity.id})">Modifica</button>
