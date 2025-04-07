@@ -1146,6 +1146,45 @@ function getSafeStorage() {
 let notesVisible = true;
 let descriptionsVisible = true;
 
+// Sposta la dichiarazione della funzione processText() fuori da qualsiasi altra funzione
+// per renderla disponibile globalmente nel tuo script
+
+// Aggiungi questa funzione fuori dalle altre funzioni, magari subito dopo le dichiarazioni delle variabili principali
+function processText(text) {
+    if (!text) return '';
+    
+    // Converte il testo Markdown in HTML
+    
+    // Links [text](url)
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+    
+    // Bold **text** o __text__
+    text = text.replace(/(\*\*|__)(.*?)\1/g, '<strong>$2</strong>');
+    
+    // Italic *text* o _text_
+    text = text.replace(/(\*|_)(.*?)\1/g, '<em>$2</em>');
+    
+    // Headers (supportiamo h3,h4,h5,h6 poiché h1,h2 sono usati per altre cose)
+    text = text.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+    text = text.replace(/^#### (.*?)$/gm, '<h4>$1</h4>');
+    text = text.replace(/^##### (.*?)$/gm, '<h5>$1</h5>');
+    text = text.replace(/^###### (.*?)$/gm, '<h6>$1</h6>');
+    
+    // Liste
+    text = text.replace(/^\* (.*?)$/gm, '<li>$1</li>');
+    text = text.replace(/^- (.*?)$/gm, '<li>$1</li>');
+    
+    // Raggruppa le liste non ordinate
+    text = text.replace(/(<li>.*?<\/li>)\s*(<li>)/g, '$1$2');
+    text = text.replace(/(<li>.*?<\/li>)(?!\s*<li>)/g, '<ul>$1</ul>');
+    
+    // Converti i ritorni a capo in <br> se non sono già parte di un tag HTML
+    text = text.replace(/\n(?![<\s])/g, '<br>');
+    
+    return text;
+}
+
+	    
 function toggleAllNotes() {
     notesVisible = !notesVisible;
     const daysContainer = document.getElementById('days-container');
@@ -1231,7 +1270,10 @@ function toggleAllDescriptions() {
         return false;
     }
 };
-// Funzioni per riordinare gli elementi
+
+	    
+	    
+	    // Funzioni per riordinare gli elementi
 
 // Abilita funzionalità di riordinamento per i giorni
 function enableDayReordering() {
@@ -1950,40 +1992,7 @@ function addToGoogleCalendar(dayId, activityId) {
     if (descElement) descElement.classList.add('completed');
 }
 
-                    // Funzione per convertire i ritorni a capo in tag HTML <br> e permettere l'uso di link HTML
-                    function processText(text) {
-    if (!text) return '';
-    
-    // Converte il testo Markdown in HTML
-    
-    // Links [text](url)
-    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-    
-    // Bold **text** o __text__
-    text = text.replace(/(\*\*|__)(.*?)\1/g, '<strong>$2</strong>');
-    
-    // Italic *text* o _text_
-    text = text.replace(/(\*|_)(.*?)\1/g, '<em>$2</em>');
-    
-    // Headers (supportiamo h3,h4,h5,h6 poiché h1,h2 sono usati per altre cose)
-    text = text.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
-    text = text.replace(/^#### (.*?)$/gm, '<h4>$1</h4>');
-    text = text.replace(/^##### (.*?)$/gm, '<h5>$1</h5>');
-    text = text.replace(/^###### (.*?)$/gm, '<h6>$1</h6>');
-    
-    // Liste
-    text = text.replace(/^\* (.*?)$/gm, '<li>$1</li>');
-    text = text.replace(/^- (.*?)$/gm, '<li>$1</li>');
-    
-    // Raggruppa le liste non ordinate
-    text = text.replace(/(<li>.*?<\/li>)\s*(<li>)/g, '$1$2');
-    text = text.replace(/(<li>.*?<\/li>)(?!\s*<li>)/g, '<ul>$1</ul>');
-    
-    // Converti i ritorni a capo in <br> se non sono già parte di un tag HTML
-    text = text.replace(/\n(?![<\s])/g, '<br>');
-    
-    return text;
-}
+                   
                     
                     // Dentro la funzione renderDays, modifica la variabile activityContent
 const activityContent = `
