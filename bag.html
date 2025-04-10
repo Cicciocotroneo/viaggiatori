@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Baggage</title>
+    <title>Ottimizzatore Valigia</title>
     <style>
         :root {
             --primary-color: #4a6fa5;
@@ -253,7 +254,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Smart Baggage</h1>
+        <h1>Ottimizzatore Valigia</h1>
         
         <form id="packing-form">
             <div class="form-group">
@@ -338,6 +339,14 @@
             <div class="form-group">
                 <label for="lavanderia">Accesso a servizi di lavanderia:</label>
                 <select id="lavanderia" required>
+                    <option value="si">Sì</option>
+                    <option value="no" selected>No</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="piscina">Accesso a piscina:</label>
+                <select id="piscina" required>
                     <option value="si">Sì</option>
                     <option value="no" selected>No</option>
                 </select>
@@ -565,10 +574,12 @@
             // Regole base per tipo di indumento
             base: {
                 intimo: { formula: "durata + 2" },
-                t_shirt: { formula: "Math.ceil(durata_effettiva * 0.7)" },
+                // Aggiungi regola per aumentare il numero minimo di t-shirt
+            t_shirt: { formula: "Math.max(durata_effettiva * 0.7, durata_effettiva * 0.6 + 1)" },
                 pantaloni: { formula: "Math.ceil(durata_effettiva * 0.4)" },
                 maglie: { formula: "Math.ceil(durata_effettiva * 0.5)" },
-                calzini: { formula: "durata + 1" }
+                calzini: { formula: "durata + 1" },
+                pigiama: { formula: "Math.ceil(durata / 3) || 1" }
             },
             
             // Modificatori per clima
@@ -634,8 +645,7 @@
                 },
                 piacere_citta: {
                     t_shirt_modifier: 1.1,
-                    scarpe_comode: 1,
-                    outfit_casual_elegante: { formula: "Math.ceil(durata * 0.3)" }
+                    scarpe_comode: 1
                 },
                 evento_speciale: {
                     outfit_elegante: 1
@@ -655,6 +665,7 @@
             const genere = formData.genere;
             const eta = formData.eta;
             const lavanderia = formData.lavanderia === "si";
+            const piscina = formData.piscina === "si";
             const stesso_outfit_primo_giorno = formData.outfit_primo_giorno === "si";
             const outfit_ultimo_giorno = formData.outfit_ultimo_giorno;
             
@@ -691,7 +702,8 @@
             
             // Calcolo indumenti base
             risultati.intimo = durata + 2; // Non applichiamo mai riduzioni all'intimo
-            risultati.t_shirt = Math.ceil(durata_effettiva * 0.7 * (packingRules.clima[clima].t_shirt || 1));
+            // Garantiamo un numero adeguato di t-shirt (minimo circa 1 al giorno)
+            risultati.t_shirt = Math.ceil(Math.max(durata_effettiva * 0.7, durata_effettiva * 0.6 + 1) * (packingRules.clima[clima].t_shirt || 1));
             risultati.pantaloni = Math.ceil(durata_effettiva * 0.4);
             risultati.maglie = Math.ceil(durata_effettiva * 0.5 * (packingRules.clima[clima].maglie || 1));
             risultati.calzini = durata + 1;
@@ -706,18 +718,41 @@
                 }
             });
             
-            // Aggiungiamo indumenti specifici per destinazione
-            Object.keys(packingRules.destinazione[destinazione]).forEach(item => {
-                if (typeof packingRules.destinazione[destinazione][item] === "number") {
-                    risultati[item] = packingRules.destinazione[destinazione][item];
-                } else if (typeof packingRules.destinazione[destinazione][item] === "object") {
-                    const formula = packingRules.destinazione[destinazione][item].formula;
-                    // Eseguiamo la formula in modo sicuro
-                    risultati[item] = eval(formula);
-                }
-            });
+            // Aggiungiamo elementi in base alla destinazione specificamente per il tipo scelto
+            if (destinazione === "mare") {
+                Object.keys(packingRules.destinazione[destinazione]).forEach(item => {
+                    if (typeof packingRules.destinazione[destinazione][item] === "number") {
+                        risultati[item] = packingRules.destinazione[destinazione][item];
+                    } else if (typeof packingRules.destinazione[destinazione][item] === "object") {
+                        const formula = packingRules.destinazione[destinazione][item].formula;
+                        risultati[item] = eval(formula);
+                    }
+                });
+            } else {
+                // Per destinazioni non mare, aggiungiamo indumenti specifici per la destinazione
+                // ma escludiamo i costumi se non c'è piscina
+                Object.keys(packingRules.destinazione[destinazione]).forEach(item => {
+                    if (item !== "costumi" && item !== "copricostumi" && item !== "telo_mare" && item !== "infradito") {
+                        if (typeof packingRules.destinazione[destinazione][item] === "number") {
+                            risultati[item] = packingRules.destinazione[destinazione][item];
+                        } else if (typeof packingRules.destinazione[destinazione][item] === "object") {
+                            const formula = packingRules.destinazione[destinazione][item].formula;
+                            risultati[item] = eval(formula);
+                        }
+                    }
+                });
+            }
             
-            // Aggiungiamo indumenti specifici per tipo di viaggio
+            // Aggiungiamo costumi se c'è una piscina (per destinazioni diverse dal mare)
+            if (piscina === "si" && destinazione !== "mare") {
+                // In caso di bagaglio cabin e durata fino a 7 giorni, limita a 1 costume
+                if (dimensione_bagaglio === "piccolo" && durata <= 7) {
+                    risultati.costumi = 1;
+                } else {
+                    risultati.costumi = Math.ceil(durata * 0.3); // Meno costumi rispetto al mare
+                }
+                // Non aggiungiamo il telo mare per la piscina
+            }
             Object.keys(packingRules.tipo_viaggio[tipo_viaggio]).forEach(item => {
                 if (item === "t_shirt_modifier") {
                     risultati.t_shirt = Math.ceil(risultati.t_shirt * packingRules.tipo_viaggio[tipo_viaggio][item]);
@@ -730,14 +765,14 @@
                 }
             });
             
-            // Aggiungiamo outfit per eventi speciali
+            // Aggiungiamo outfit per eventi speciali (SOLO se ci sono eventi speciali)
             if (eventi_speciali > 0) {
                 risultati.outfit_eventi_speciali = eventi_speciali;
             }
             
             // Applichiamo il fattore di riduzione a tutto tranne l'intimo
             Object.keys(risultati).forEach(item => {
-                if (item !== "intimo") {
+                if (item !== "intimo" && item !== undefined && risultati[item] !== undefined) {
                     risultati[item] = Math.ceil(risultati[item] * fattore_riduzione);
                 }
             });
@@ -781,7 +816,7 @@
             "Indumenti base": ["intimo", "t_shirt", "pantaloni", "maglie", "calzini", "pigiama"],
             "Capispalla e accessori": ["giacca_pesante", "giacca_leggera", "sciarpa", "guanti", "berretto", "cappello", "giacca_impermeabile"],
             "Calzature": ["scarpe_comode", "scarpe_trekking", "scarponi", "infradito"],
-            "Outfit specifici": ["outfit_casual_elegante", "outfit_elegante", "outfit_eventi_speciali", "abbigliamento_tecnico", "camicie", "completi", "cravatte"],
+            "Outfit specifici": ["outfit_elegante", "outfit_eventi_speciali", "abbigliamento_tecnico", "camicie", "completi", "cravatte"],
             "Per il mare": ["costumi", "copricostumi", "telo_mare"]
         };
         
@@ -803,11 +838,12 @@
                 stagione: document.getElementById('stagione').value,
                 destinazione: document.getElementById('destinazione').value,
                 tipo_viaggio: document.getElementById('tipo_viaggio').value,
-                eventi_speciali: document.getElementById('eventi_speciali').value,
+                eventi_speciali: document.getElementById('eventi_speciali').value || 0,
                 dimensione_bagaglio: document.getElementById('dimensione_bagaglio').value,
                 genere: document.getElementById('genere').value,
                 eta: document.getElementById('eta').value,
                 lavanderia: document.getElementById('lavanderia').value,
+                piscina: document.getElementById('piscina').value,
                 outfit_primo_giorno: document.getElementById('outfit_primo_giorno').value,
                 outfit_ultimo_giorno: document.getElementById('outfit_ultimo_giorno').value
             };
@@ -825,8 +861,11 @@
                 
                 categorie[categoria].forEach(item => {
                     if (risultati[item] && risultati[item] > 0) {
-                        categoryHtml += `<li>${indumentiLabels[item]}: <span>${risultati[item]}</span></li>`;
-                        hasItems = true;
+                        const label = indumentiLabels[item];
+                        if (label) {
+                            categoryHtml += `<li>${label}: <span>${risultati[item]}</span></li>`;
+                            hasItems = true;
+                        }
                     }
                 });
                 
