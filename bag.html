@@ -701,7 +701,7 @@
                 
                 categoriePersonalizzate[categoria].forEach(item => {
                     if (risultati[item] && risultati[item] > 0) {
-                        const label = indumentiLabels[item];
+                        const label = indumentiLabelsFinali[item];
                         if (label) {
                             const quantita = risultati[item];
                             itemsCategoria.push(`${label}: ${quantita}`);
@@ -777,7 +777,66 @@
                 return true;
             });
         }
-
+// Funzione per ottenere le etichette in base al genere
+function getEtichettePerGenere(genere) {
+    // Etichette di base (comuni a tutti i generi)
+    const etichette = {
+        intimo: "Intimo",
+        t_shirt: "T-shirt / Magliette",
+        pantaloni: "Pantaloni",
+        maglie: "Maglie / Felpe",
+        calzini: "Calzini",
+        pigiama: "Pigiama / Abbigliamento notturno",
+        giacca_pesante: "Giacca pesante",
+        giacca_leggera: "Giacca leggera",
+        sciarpa: "Sciarpa",
+        guanti: "Guanti",
+        berretto: "Berretto",
+        cappello: "Cappello",
+        costumi: "Costumi da bagno",
+        telo_mare: "Telo mare",
+        infradito: "Infradito",
+        giacca_impermeabile: "Giacca impermeabile",
+        scarponi: "Scarponi",
+        maglioni: "Maglioni",
+        scarpe_comode: "Scarpe comode da passeggio",
+        scarpe_trekking: "Scarpe da trekking",
+        abbigliamento_tecnico: "Abbigliamento tecnico",
+        outfit_elegante: "Outfit elegante",
+        outfit_eventi_speciali: "Outfit per eventi speciali"
+    };
+    
+    // Adattamenti specifici per genere
+    if (genere === "donna") {
+        etichette.intimo = "Intimo (mutande, reggiseni)";
+        etichette.pantaloni = "Pantaloni / Gonne";
+        etichette.costumi = "Costumi da bagno";
+        etichette.copricostumi = "Copricostumi / Parei";
+        etichette.camicie = "Bluse / Camicie";
+        etichette.completi = "Tailleur / Abiti formali";
+        etichette.cravatte = "Accessori formali (foulard, gioielli)";
+    } 
+    else if (genere === "uomo") {
+        etichette.intimo = "Intimo (boxer/slip, canottiere)";
+        etichette.pantaloni = "Pantaloni / Bermuda";
+        etichette.costumi = "Costumi da bagno";
+        etichette.copricostumi = "T-shirt da spiaggia";
+        etichette.camicie = "Camicie";
+        etichette.completi = "Completi / Abiti formali";
+        etichette.cravatte = "Cravatte / Papillon";
+    }
+    else { // non_binario o altro
+        etichette.intimo = "Intimo";
+        etichette.pantaloni = "Pantaloni / Altri indumenti inferiori";
+        etichette.costumi = "Costumi da bagno";
+        etichette.copricostumi = "Copricostumi";
+        etichette.camicie = "Camicie / Bluse";
+        etichette.completi = "Abbigliamento formale";
+        etichette.cravatte = "Accessori formali";
+    }
+    
+    return etichette;
+}
         // Dati di riferimento per l'algoritmo
         const packingRules = {
             // Regole base per tipo di indumento
@@ -1112,6 +1171,13 @@
             const risultati = calcolaGuardaroba(formData);
             console.log("Debug - Risultati calcolati:", risultati);
 
+
+            // Ottieni le etichette specifiche per il genere selezionato
+const indumentiLabelsGenere = getEtichettePerGenere(formData.genere);
+
+            // Unisci le etichette di base con quelle specifiche per genere
+const indumentiLabelsFinali = {...indumentiLabels, ...indumentiLabelsGenere};
+
             // Inserisci qui la soluzione delle categorie personalizzate
             let categoriePersonalizzate = JSON.parse(JSON.stringify(categorie)); // Clone profondo
 
@@ -1135,7 +1201,7 @@
                 let categoryHtml = `<div class="category">${categoria}</div><ul class="packing-list">`;
 
                 categoriePersonalizzate[categoria].forEach(item => {
-                    console.log(`Item: ${item}, Label: ${indumentiLabels[item]}, Presente: ${item in indumentiLabels}`);
+                    console.log(`Item: ${item}, Label: ${indumentiLabelsFinali[item]}, Presente: ${item in indumentiLabels}`);
 
                     console.log(`Verifica item '${item}':`, {
                         presente: item in risultati,
@@ -1144,7 +1210,7 @@
                     });
 
                     if (risultati[item] && risultati[item] > 0) {
-                        const label = indumentiLabels[item];
+                        const label = indumentiLabelsFinali[item];
                         if (label) {
                             categoryHtml += `<li>${label}: <span>${risultati[item]}</span></li>`;
                             hasItems = true;
