@@ -617,7 +617,7 @@
         };
 
         // Funzione per ottenere fattori in base all'età
-        function fattoriPerEta(eta, durata) {
+        function fattoriPerEta(eta, durata, genere) {
             switch(eta) {
                 case "bambino_piccolo":
                     return {
@@ -651,18 +651,31 @@
                         borraccia_bambino: 1
                     };
                     
-                case "adolescente":
-                    return {
-                        t_shirt: 1.2,  // Leggermente più cambi rispetto agli adulti
-                        pigiama: 1.2,
-                        // Elementi specifici
-                        prodotti_igiene_teen: 1,
-                        powerbank: 1,
-                        cuffie: 1,
-                        makeup: 1,
-                        skincare: 1,
-                        assorbenti: 1  // Se applicabile
-                    };
+                  case "adolescente":
+            let risultato = {
+                t_shirt: 1.2,  // Leggermente più cambi rispetto agli adulti
+                pigiama: 1.2,
+                // Elementi specifici
+                prodotti_igiene_teen: 1,
+                powerbank: 1,
+                cuffie: 1,
+            };
+            
+            // Aggiungi elementi specifici per genere femminile
+            if (genere === "donna") {
+                risultato.makeup = 1;
+                risultato.skincare = 1;
+                risultato.assorbenti = 1;
+            } else if (genere === "uomo") {
+                // Per i maschi, aggiungiamo solo skincare ma non makeup o assorbenti
+                risultato.skincare = 1;
+            } else {
+                // Per non binario, includiamo sia skincare che makeup come opzione
+                risultato.skincare = 1;
+                risultato.makeup = 1;
+            }
+            
+            return risultato;
                     
                 case "anziano":
                     return {
@@ -971,7 +984,7 @@ function getEtichettePerGenere(genere) {
             }
 
             // Ottieni fattori specifici per età
-            const fattoriEta = fattoriPerEta(eta, durata);
+            const fattoriEta = fattoriPerEta(eta, durata, genere);
 
             // Oggetto per i risultati
             const risultati = {};
