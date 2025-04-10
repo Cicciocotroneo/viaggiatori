@@ -578,7 +578,7 @@
                 pantaloni: { formula: "Math.ceil(durata_effettiva * 0.4)" },
                 maglie: { formula: "Math.ceil(durata_effettiva * 0.5)" },
                 calzini: { formula: "durata + 1" },
-                pigiama: { formula: "Math.ceil(durata / 5) || 1" }
+                pigiama: { formula: "Math.ceil(durata / 7) || 1" }
             },
             
             // Modificatori per clima
@@ -710,7 +710,7 @@
             risultati.pantaloni = Math.ceil(durata_effettiva * 0.4);
             risultati.maglie = Math.ceil(durata_effettiva * 0.5 * (packingRules.clima[clima].maglie || 1));
             risultati.calzini = durata + 1;
-            risultati.pigiama = Math.ceil(durata / 5) || 1; // Un pigiama ogni 5 giorni, minimo 1
+            risultati.pigiama = Math.ceil(durata / 7) || 1; // Un pigiama ogni 7 giorni, minimo 1
             
             // Aggiungiamo indumenti specifici per clima
             Object.keys(packingRules.clima[clima]).forEach(item => {
@@ -782,19 +782,22 @@
             }
             
             // Non facciamo il controllo undefind qui dato che lo facciamo dopo nella visualizzazione
-            // Applichiamo il fattore di riduzione a tutto tranne l'intimo
-            Object.keys(risultati).forEach(item => {
-                if (item !== "intimo" && risultati[item] !== undefined) {
-                    risultati[item] = Math.ceil(risultati[item] * fattore_riduzione);
-                    // Se dopo la riduzione il valore è 0, lo impostiamo a 1 per il minimo necessario
-                    // (eccetto per gli outfit speciali che possono essere 0)
-                    if (risultati[item] === 0 && 
-                        item !== "outfit_eventi_speciali" && 
-                        item !== "abbigliamento_tecnico") {
-                        risultati[item] = 1;
-                    }
-                }
-            });
+// Applichiamo il fattore di riduzione a tutto tranne l'intimo
+Object.keys(risultati).forEach(item => {
+    if (item === "calzini") {
+        // Per i calzini, impostiamo esattamente il numero di giorni di viaggio
+        risultati[item] = durata;
+    } else if (item !== "intimo" && risultati[item] !== undefined) {
+        risultati[item] = Math.ceil(risultati[item] * fattore_riduzione);
+        // Se dopo la riduzione il valore è 0, lo impostiamo a 1 per il minimo necessario
+        // (eccetto per gli outfit speciali che possono essere 0)
+        if (risultati[item] === 0 && 
+            item !== "outfit_eventi_speciali" && 
+            item !== "abbigliamento_tecnico") {
+            risultati[item] = 1;
+        }
+    }
+});
             
             return risultati;
         }
