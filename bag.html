@@ -12,46 +12,47 @@
             --light-color: #f5f5f5;
             --dark-color: #333;
             --success-color: #66bb6a;
+        }
         .checkboxes {
             margin-bottom: 30px;
         }
-        
+
         .checkbox-header {
             margin-bottom: 10px;
             display: block;
         }
-        
+
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-left: 10px;
         }
-        
+
         .checkbox-item {
             display: flex;
             align-items: center;
             margin-right: 15px;
             margin-bottom: 8px;
         }
-        
+
         .checkbox-item input[type="checkbox"] {
             width: auto;
             margin-right: 5px;
         }
-        
+
         .checkbox-item label {
             margin-bottom: 0;
             font-weight: normal;
         }
-        
+
         h3 {
             color: var(--primary-color);
             margin: 30px 0 15px;
             padding-bottom: 5px;
             border-bottom: 1px solid var(--accent-color);
         }
-        
+
         .category-header {
             background-color: var(--primary-color);
             color: white;
@@ -61,14 +62,14 @@
             margin-bottom: 10px;
             font-weight: 600;
         }
-        
-        
+
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
@@ -76,7 +77,7 @@
             color: var(--dark-color);
             padding: 20px;
         }
-        
+
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -85,30 +86,30 @@
             border-radius: 10px;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
         }
-        
+
         h1, h2, h3 {
             color: var(--primary-color);
             margin-bottom: 20px;
         }
-        
+
         h1 {
             text-align: center;
             border-bottom: 2px solid var(--accent-color);
             padding-bottom: 10px;
             margin-bottom: 30px;
         }
-        
+
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: var(--secondary-color);
         }
-        
+
         select, input {
             width: 100%;
             padding: 10px;
@@ -116,13 +117,13 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        
+
         select:focus, input:focus {
             outline: none;
             border-color: var(--accent-color);
             box-shadow: 0 0 5px rgba(79, 195, 247, 0.5);
         }
-        
+
         .btn {
             display: inline-block;
             background-color: var(--primary-color);
@@ -136,40 +137,40 @@
             margin: 20px 0;
             transition: background-color 0.3s;
         }
-        
+
         .btn:hover {
             background-color: var(--secondary-color);
         }
-        
+
         .btn-reset {
             background-color: #e0e0e0;
             color: var(--dark-color);
             margin-left: 10px;
         }
-        
+
         .btn-reset:hover {
             background-color: #bdbdbd;
         }
-        
+
         .action-buttons {
             text-align: center;
         }
-        
+
         .result-actions {
             margin-top: 25px;
             border-top: 1px solid #ccc;
             padding-top: 20px;
         }
-        
+
         .btn-action {
             background-color: var(--secondary-color);
             margin: 0 10px;
         }
-        
+
         .btn-action:hover {
             background-color: var(--primary-color);
         }
-        
+
         .result {
             margin-top: 30px;
             display: none;
@@ -178,7 +179,7 @@
             border-radius: 8px;
             border-left: 5px solid var(--accent-color);
         }
-        
+
         .tips-section {
             margin-top: 25px;
             background-color: #fff;
@@ -186,19 +187,19 @@
             border-radius: 8px;
             border: 1px solid #ccc;
         }
-        
+
         .tips-section h3 {
             color: var(--secondary-color);
             margin-bottom: 12px;
             font-size: 1.2rem;
         }
-        
+
         .tip-item {
             margin-bottom: 10px;
             padding-left: 20px;
             position: relative;
         }
-        
+
         .tip-item:before {
             content: "•";
             position: absolute;
@@ -206,45 +207,45 @@
             color: var(--accent-color);
             font-weight: bold;
         }
-        
+
         .result h2 {
             color: var(--secondary-color);
             margin-bottom: 15px;
         }
-        
+
         .packing-list {
             list-style-type: none;
         }
-        
+
         .packing-list li {
             padding: 8px 0;
             border-bottom: 1px dashed #ccc;
             display: flex;
             justify-content: space-between;
         }
-        
+
         .packing-list span {
             font-weight: 600;
         }
-        
+
         .category {
             margin-top: 15px;
             margin-bottom: 10px;
             font-weight: 700;
             color: var(--secondary-color);
         }
-        
+
         @media (max-width: 600px) {
             .container {
                 padding: 15px;
             }
-            
+
             .btn {
                 display: block;
                 width: 100%;
                 margin-bottom: 10px;
             }
-            
+
             .btn-reset {
                 margin-left: 0;
             }
@@ -254,13 +255,13 @@
 <body>
     <div class="container">
         <h1>Smart Baggage</h1>
-        
+
         <form id="packing-form">
             <div class="form-group">
                 <label for="durata">Durata del viaggio (giorni):</label>
                 <input type="number" id="durata" min="1" max="30" value="7" required>
             </div>
-            
+
             <div class="form-group">
                 <label for="clima">Clima:</label>
                 <select id="clima" required>
@@ -270,7 +271,7 @@
                     <option value="tropicale">Tropicale (sopra 30°C)</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="stagione">Stagione:</label>
                 <select id="stagione" required>
@@ -280,7 +281,7 @@
                     <option value="inverno">Inverno</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="destinazione">Destinazione:</label>
                 <select id="destinazione" required>
@@ -290,7 +291,7 @@
                     <option value="campagna">Campagna</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="tipo_viaggio">Tipologia di viaggio:</label>
                 <select id="tipo_viaggio" required>
@@ -301,12 +302,12 @@
                     <option value="evento_speciale">Evento speciale</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="eventi_speciali">Numero di eventi speciali:</label>
                 <input type="number" id="eventi_speciali" min="0" max="10" value="0">
             </div>
-            
+
             <div class="form-group">
                 <label for="dimensione_bagaglio">Dimensione bagaglio:</label>
                 <select id="dimensione_bagaglio" required>
@@ -315,7 +316,7 @@
                     <option value="grande">Grande</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="genere">Genere:</label>
                 <select id="genere" required>
@@ -324,17 +325,18 @@
                     <option value="non_binario">Non binario</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="eta">Età:</label>
                 <select id="eta" required>
-                    <option value="bambino">Bambino (0-12)</option>
+                    <option value="bambino_piccolo">Bambino (0-3)</option>
+                    <option value="bambino_grande">Bambino (4-12)</option>
                     <option value="adolescente">Adolescente (13-18)</option>
-                    <option value="adulto" selected>Adulto (19-65)</option>
+                    <option value="adulto" selected>Adulto (19-64)</option>
                     <option value="anziano">Senior (65+)</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="lavanderia">Accesso a servizi di lavanderia:</label>
                 <select id="lavanderia" required>
@@ -342,7 +344,7 @@
                     <option value="no" selected>No</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="piscina">Accesso a piscina:</label>
                 <select id="piscina" required>
@@ -350,7 +352,7 @@
                     <option value="no" selected>No</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="outfit_primo_giorno">Utilizzerai lo stesso outfit per il viaggio di andata e il primo giorno?</label>
                 <select id="outfit_primo_giorno" required>
@@ -358,7 +360,7 @@
                     <option value="no" selected>No</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="outfit_ultimo_giorno">Per l'ultimo giorno:</label>
                 <select id="outfit_ultimo_giorno" required>
@@ -366,9 +368,9 @@
                     <option value="doppio">Due outfit separati</option>
                 </select>
             </div>
-            
+
             <h3>Elementi Aggiuntivi</h3>
-            
+
             <div class="form-group checkboxes">
                 <label class="checkbox-header">Tecnologia:</label>
                 <div class="checkbox-group">
@@ -394,7 +396,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="form-group checkboxes">
                 <label class="checkbox-header">Accessori Tecnologici:</label>
                 <div class="checkbox-group">
@@ -416,7 +418,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="form-group checkboxes">
                 <label class="checkbox-header">Igiene Personale:</label>
                 <div class="checkbox-group">
@@ -442,7 +444,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="form-group checkboxes">
                 <label class="checkbox-header">Medicinali:</label>
                 <div class="checkbox-group">
@@ -468,13 +470,13 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="action-buttons">
                 <button type="submit" class="btn">Calcola</button>
                 <button type="reset" class="btn btn-reset">Reset</button>
             </div>
         </form>
-        
+
         <div class="result" id="result">
             <h2>La tua lista ottimizzata</h2>
             <div id="packing-result">
@@ -489,10 +491,11 @@
             <div class="action-buttons result-actions">
                 <button id="btn-print" class="btn btn-action">Stampa lista</button>
                 <button id="btn-save" class="btn btn-action">Salva come PDF</button>
+                <button id="btn-markdown" class="btn btn-action">Esporta come Markdown</button>
             </div>
         </div>
     </div>
-    
+
     <script>
         // Database di consigli per destinazioni specifiche
         const destinationTips = {
@@ -525,7 +528,7 @@
                 "Una borraccia termica manterrà fresche le bevande nelle giornate calde"
             ]
         };
-        
+
         // Consigli basati sul clima
         const climateTips = {
             freddo: [
@@ -547,7 +550,7 @@
                 "Un cappello a tesa larga offre maggiore protezione del viso"
             ]
         };
-        
+
         // Consigli stagionali
         const seasonalTips = {
             primavera: [
@@ -567,7 +570,226 @@
                 "Calzature impermeabili con buona aderenza sono fondamentali"
             ]
         };
-        
+
+        // Categorie specifiche per età
+        const categoriePerEta = {
+            "bambino_piccolo": {
+                "Indumenti specifici bambino": ["body", "bavaglie", "pannolini", "bavaglini"],
+                "Accessori bambino": ["salviette", "crema_cambio", "biberon", "ciuccio", "peluche", "coperta_speciale"]
+            },
+            "bambino_grande": {
+                "Accessori bambino": ["giochi", "attivita", "snack_bambino", "borraccia_bambino"]
+            },
+            "adolescente": {
+                "Accessori adolescente": ["prodotti_igiene_teen", "powerbank", "cuffie", "makeup", "skincare", "assorbenti"]
+            },
+            "anziano": {
+                "Accessori senior": ["medicinali_specifici", "ausili_mobilita", "cuscini_speciali", "calzature_ergonomiche"]
+            }
+        };
+
+        // Etichette per elementi specifici per età
+        const nuoveEtichette = {
+            // Bambino piccolo
+            body: "Body/Tutine",
+            bavaglie: "Bavaglini/Bavaglie",
+            pannolini: "Pannolini",
+            bavaglini: "Bavaglini per pasti",
+            salviette: "Salviette umidificate",
+            crema_cambio: "Crema per cambio pannolino",
+            biberon: "Biberon/Tettarelle",
+            ciuccio: "Ciuccio",
+            peluche: "Peluche/Giocattolo comfort",
+            coperta_speciale: "Coperta/cuscino speciale",
+            
+            // Bambino grande
+            giochi: "Giochi/Giocattoli",
+            attivita: "Attività (libri, colori, ecc.)",
+            snack_bambino: "Snack per bambini",
+            borraccia_bambino: "Borraccia personale",
+            
+            // Adolescente
+            prodotti_igiene_teen: "Prodotti per igiene personale teen",
+            powerbank: "Power bank",
+            cuffie: "Cuffie/Auricolari",
+            makeup: "Makeup",
+            skincare: "Prodotti skincare",
+            assorbenti: "Assorbenti/Prodotti igiene femminile",
+            
+            // Anziano
+            medicinali_specifici: "Medicinali/Integratori",
+            ausili_mobilita: "Ausili per mobilità",
+            cuscini_speciali: "Cuscini speciali/supporti",
+            calzature_ergonomiche: "Calzature ergonomiche"
+        };
+
+        // Funzione per ottenere fattori in base all'età
+        function fattoriPerEta(eta, durata) {
+            switch(eta) {
+                case "bambino_piccolo":
+                    return {
+                        t_shirt: 2.5,  // Molto più cambi per bambini piccoli
+                        pantaloni: 2.0,
+                        maglie: 2.0,
+                        pigiama: 2.0,
+                        // Elementi specifici per bambini piccoli
+                        body: Math.ceil(durata * 2.5),          // 2-3 body al giorno
+                        bavaglie: Math.ceil(durata * 3),        // 3 bavaglini al giorno
+                        pannolini: Math.ceil(durata * 8),       // 8 pannolini al giorno
+                        bavaglini: Math.min(5, Math.ceil(durata * 0.8)), // Max 5 bavaglini
+                        salviette: 1,
+                        crema_cambio: 1,
+                        biberon: 2,
+                        ciuccio: 2,                             // 2 ciucci (1 riserva)
+                        peluche: 1,
+                        coperta_speciale: 1
+                    };
+                    
+                case "bambino_grande":
+                    return {
+                        t_shirt: 1.5,  // Più cambi rispetto agli adulti
+                        pantaloni: 1.3,
+                        maglie: 1.3,
+                        pigiama: 1.5,
+                        // Elementi specifici
+                        giochi: Math.min(3, Math.ceil(durata * 0.3)),
+                        attivita: Math.min(3, Math.ceil(durata * 0.4)),
+                        snack_bambino: 1,
+                        borraccia_bambino: 1
+                    };
+                    
+                case "adolescente":
+                    return {
+                        t_shirt: 1.2,  // Leggermente più cambi rispetto agli adulti
+                        pigiama: 1.2,
+                        // Elementi specifici
+                        prodotti_igiene_teen: 1,
+                        powerbank: 1,
+                        cuffie: 1,
+                        makeup: 1,
+                        skincare: 1,
+                        assorbenti: 1  // Se applicabile
+                    };
+                    
+                case "anziano":
+                    return {
+                        t_shirt: 1.2,  // Più cambi per comfort
+                        pantaloni: 1.2,
+                        maglie: 1.3,   // Più strati per sensibilità alle temperature
+                        pigiama: 1.3,
+                        // Elementi specifici
+                        medicinali_specifici: 1,
+                        ausili_mobilita: 1,
+                        cuscini_speciali: 1,
+                        calzature_ergonomiche: 1
+                    };
+                    
+                default: // adulto
+                    return {
+                        t_shirt: 1.0,
+                        pantaloni: 1.0,
+                        maglie: 1.0,
+                        pigiama: 1.0
+                    };
+            }
+        }
+
+        // Funzione per generare il Markdown con caselle di controllo
+        function generaMarkdown(risultati, consigli, elementiAggiuntivi, categoriePersonalizzate, età) {
+            let markdown = "# Lista Valigia\n\n";
+            
+            // Funzione per generare una sezione di lista
+            function aggiungiSezione(titolo, items) {
+                markdown += `## ${titolo}\n\n`;
+                items.forEach(item => {
+                    markdown += `- [ ] ${item}\n`;
+                });
+                markdown += "\n";
+            }
+            
+            // Aggiungi indumenti per categoria
+            for (const categoria in categoriePersonalizzate) {
+                const itemsCategoria = [];
+                
+                categoriePersonalizzate[categoria].forEach(item => {
+                    if (risultati[item] && risultati[item] > 0) {
+                        const label = indumentiLabels[item];
+                        if (label) {
+                            const quantita = risultati[item];
+                            itemsCategoria.push(`${label}: ${quantita}`);
+                        }
+                    }
+                });
+                
+                if (itemsCategoria.length > 0) {
+                    aggiungiSezione(categoria, itemsCategoria);
+                }
+            }
+            
+            // Aggiungi elementi specifici per età
+            if (età in categoriePerEta) {
+                for (const categoria in categoriePerEta[età]) {
+                    const itemsCategoria = [];
+                    
+                    categoriePerEta[età][categoria].forEach(item => {
+                        if (risultati[item] && risultati[item] > 0) {
+                            const label = nuoveEtichette[item];
+                            if (label) {
+                                const quantita = risultati[item];
+                                itemsCategoria.push(`${label}: ${quantita}`);
+                            }
+                        }
+                    });
+                    
+                    if (itemsCategoria.length > 0) {
+                        aggiungiSezione(categoria, itemsCategoria);
+                    }
+                }
+            }
+            
+            // Aggiungi elementi aggiuntivi
+            for (const categoria in elementiAggiuntivi) {
+                if (elementiAggiuntivi[categoria].length > 0) {
+                    aggiungiSezione(categoria, elementiAggiuntivi[categoria]);
+                }
+            }
+            
+            // Aggiungi consigli
+            if (consigli && consigli.length > 0) {
+                markdown += "## Consigli\n\n";
+                consigli.forEach(consiglio => {
+                    markdown += `- ${consiglio}\n`;
+                });
+            }
+            
+            return markdown;
+        }
+
+        // Funzione per scaricare un file di testo
+        function scaricaFile(contenuto, nomeFile) {
+            const blob = new Blob([contenuto], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nomeFile;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Funzione per filtrare i consigli ridondanti
+        function filtraConsigli(consigli, risultati, elementiSelezionati) {
+            return consigli.filter(consiglio => {
+                // Evita consigli per oggetti già inclusi nella lista
+                if (risultati.cappello && consiglio.toLowerCase().includes("cappello")) return false;
+                if (elementiSelezionati.includes("acc_powerbank") && consiglio.toLowerCase().includes("power bank")) return false;
+                
+                // Altri filtri per evitare ripetizioni
+                return true;
+            });
+        }
+
         // Dati di riferimento per l'algoritmo
         const packingRules = {
             // Regole base per tipo di indumento
@@ -580,7 +802,7 @@
                 calzini: { formula: "durata + 1" },
                 pigiama: { formula: "Math.ceil(durata / 7) || 1" }
             },
-            
+
             // Modificatori per clima
             clima: {
                 freddo: {
@@ -607,7 +829,7 @@
                     cappello: 1
                 }
             },
-            
+
             // Modificatori per destinazione
             destinazione: {
                 mare: {
@@ -629,7 +851,7 @@
                     cappello: 1
                 }
             },
-            
+
             // Modificatori per tipo di viaggio
             tipo_viaggio: {
                 relax: {},
@@ -651,7 +873,7 @@
                 }
             }
         };
-        
+
         // Funzione principale per calcolare gli indumenti
         function calcolaGuardaroba(formData) {
             const durata = parseInt(formData.durata);
@@ -667,51 +889,55 @@
             const piscina = formData.piscina;
             const stesso_outfit_primo_giorno = formData.outfit_primo_giorno === "si";
             const outfit_ultimo_giorno = formData.outfit_ultimo_giorno;
-            
+
             // Debug
             console.log("Debug interno - Valori di input:", {
                 durata, clima, destinazione, tipo_viaggio, 
-                eventi_speciali, dimensione_bagaglio, piscina
+                eventi_speciali, dimensione_bagaglio, piscina, eta
             });
-            let durata_effettiva = durata;
             
+            let durata_effettiva = durata;
+
             // Adattamento per il primo giorno
             if (stesso_outfit_primo_giorno) {
                 durata_effettiva -= 1;
             }
-            
+
             // Adattamento per l'ultimo giorno
             // Non applichiamo riduzioni, ma potremmo aggiungere un outfit se necessario
             if (outfit_ultimo_giorno === "doppio") {
                 durata_effettiva += 1; // Serve un outfit extra per il viaggio di ritorno
             }
-            
+
             // Minimo 1 giorno di outfit
             durata_effettiva = Math.max(1, durata_effettiva);
-            
+
             // Calcolo fattore di riduzione per bagaglio
             let fattore_riduzione = 1.0;
             if (dimensione_bagaglio === "piccolo") {
                 fattore_riduzione = 0.7;
             }
-            
+
             // Modifica per lavanderia
             if (lavanderia && durata > 7) {
                 fattore_riduzione *= 0.7;
             }
-            
+
+            // Ottieni fattori specifici per età
+            const fattoriEta = fattoriPerEta(eta, durata);
+
             // Oggetto per i risultati
             const risultati = {};
-            
+
             // Calcolo indumenti base
             risultati.intimo = durata + 2; // Non applichiamo mai riduzioni all'intimo
             // Garantiamo un numero adeguato di t-shirt (minimo circa 1 al giorno)
-            risultati.t_shirt = Math.ceil(Math.max(durata_effettiva * 0.7, durata_effettiva * 0.6 + 1) * (packingRules.clima[clima].t_shirt || 1));
-            risultati.pantaloni = Math.ceil(durata_effettiva * 0.4);
-            risultati.maglie = Math.ceil(durata_effettiva * 0.5 * (packingRules.clima[clima].maglie || 1));
+            risultati.t_shirt = Math.ceil(Math.max(durata_effettiva * 0.7, durata_effettiva * 0.6 + 1) * (packingRules.clima[clima].t_shirt || 1) * (fattoriEta.t_shirt || 1));
+            risultati.pantaloni = Math.ceil(durata_effettiva * 0.4 * (fattoriEta.pantaloni || 1));
+            risultati.maglie = Math.ceil(durata_effettiva * 0.5 * (packingRules.clima[clima].maglie || 1) * (fattoriEta.maglie || 1));
             risultati.calzini = durata + 1;
-            risultati.pigiama = Math.ceil(durata / 7) || 1; // Un pigiama ogni 7 giorni, minimo 1
-            
+            risultati.pigiama = Math.ceil((durata / 7) * (fattoriEta.pigiama || 1)) || 1; // Un pigiama ogni 7 giorni, minimo 1
+
             // Aggiungiamo indumenti specifici per clima
             Object.keys(packingRules.clima[clima]).forEach(item => {
                 if (item !== "t_shirt" && item !== "maglie") {
@@ -720,7 +946,7 @@
                     }
                 }
             });
-            
+
             // Aggiungiamo elementi in base alla destinazione specificamente per il tipo scelto
             if (destinazione === "mare") {
                 Object.keys(packingRules.destinazione[destinazione]).forEach(item => {
@@ -745,14 +971,14 @@
                     }
                 });
             }
-            
+
             // Debug interno - Controllo opzione piscina
             console.log("Debug - Controllo piscina:", {
                 piscina: piscina,
                 destinazione: destinazione,
                 condizione: (piscina === "si" && destinazione !== "mare")
             });
-            
+
             // Aggiungiamo costumi se c'è una piscina (per destinazioni diverse dal mare)
             if (piscina === "si" && destinazione !== "mare") {
                 console.log("Debug - Aggiungo costume per piscina");
@@ -764,6 +990,8 @@
                 }
                 // Non aggiungiamo il telo mare per la piscina
             }
+            
+            // Aggiungiamo modifiche per il tipo di viaggio
             Object.keys(packingRules.tipo_viaggio[tipo_viaggio]).forEach(item => {
                 if (item === "t_shirt_modifier") {
                     risultati.t_shirt = Math.ceil(risultati.t_shirt * packingRules.tipo_viaggio[tipo_viaggio][item]);
@@ -775,42 +1003,44 @@
                     risultati[item] = eval(formula);
                 }
             });
-            
+
             // Aggiungiamo outfit per eventi speciali (SOLO se ci sono eventi speciali)
             if (eventi_speciali > 0) {
                 risultati.outfit_eventi_speciali = eventi_speciali;
             }
-            
+
+            // Aggiungiamo elementi specifici per età
+            if (eta in categoriePerEta) {
+                for (const item in fattoriEta) {
+                    // Verifichiamo che non sia un fattore moltiplicativo per indumenti base
+                    if (item !== 't_shirt' && item !== 'pantaloni' && item !== 'maglie' && item !== 'pigiama' && 
+                        fattoriEta[item] !== undefined) {
+                        risultati[item] = fattoriEta[item];
+                    }
+                }
+            }
+
             // Non facciamo il controllo undefind qui dato che lo facciamo dopo nella visualizzazione
-// Applichiamo il fattore di riduzione a tutto tranne l'intimo
-Object.keys(risultati).forEach(item => {
-    if (item === "calzini") {
-        // Per i calzini, impostiamo esattamente il numero di giorni di viaggio
-        risultati[item] = durata;
-    } else if (item !== "intimo" && risultati[item] !== undefined) {
-        risultati[item] = Math.ceil(risultati[item] * fattore_riduzione);
-        // Se dopo la riduzione il valore è 0, lo impostiamo a 1 per il minimo necessario
-        // (eccetto per gli outfit speciali che possono essere 0)
-        if (risultati[item] === 0 && 
-            item !== "outfit_eventi_speciali" && 
-            item !== "abbigliamento_tecnico") {
-            risultati[item] = 1;
-        }
-    }
-});
-            
+            // Applichiamo il fattore di riduzione a tutto tranne l'intimo
+            Object.keys(risultati).forEach(item => {
+                if (item === "calzini") {
+                    // Per i calzini, impostiamo esattamente il numero di giorni di viaggio
+                    risultati[item] = durata;
+                } else if (item !== "intimo" && risultati[item] !== undefined) {
+                    risultati[item] = Math.ceil(risultati[item] * fattore_riduzione);
+                    // Se dopo la riduzione il valore è 0, lo impostiamo a 1 per il minimo necessario
+                    // (eccetto per gli outfit speciali che possono essere 0)
+                    if (risultati[item] === 0 && 
+                        item !== "outfit_eventi_speciali" && 
+                        item !== "abbigliamento_tecnico") {
+                        risultati[item] = 1;
+                    }
+                }
+            });
+
             return risultati;
         }
-        function filtraConsigli(consigli, risultati, elementiSelezionati) {
-    return consigli.filter(consiglio => {
-        // Evita consigli per oggetti già inclusi nella lista
-        if (risultati.cappello && consiglio.toLowerCase().includes("cappello")) return false;
-        if (elementiSelezionati.includes("tech_powerbank") && consiglio.toLowerCase().includes("power bank")) return false;
         
-        // Altri filtri per evitare ripetizioni
-        return true;
-    });
-}
         // Mappatura dei nomi degli indumenti per la visualizzazione
         const indumentiLabels = {
             intimo: "Intimo",
@@ -842,7 +1072,7 @@ Object.keys(risultati).forEach(item => {
             outfit_elegante: "Outfit elegante",
             outfit_eventi_speciali: "Outfit per eventi speciali",
         };
-        
+
         // Categorie per organizzare gli indumenti nell'output
         const categorie = {
             "Indumenti base": ["intimo", "t_shirt", "pantaloni", "maglie", "calzini", "pigiama"],
@@ -851,7 +1081,7 @@ Object.keys(risultati).forEach(item => {
             "Outfit specifici": ["outfit_elegante", "outfit_eventi_speciali", "abbigliamento_tecnico", "camicie", "completi", "cravatte"],
             "Per il mare": ["costumi", "copricostumi", "telo_mare"]
         };
-        
+
         // Categorie per elementi aggiuntivi
         const categorieAggiuntive = {
             "Tecnologia": "tech_",
@@ -859,11 +1089,12 @@ Object.keys(risultati).forEach(item => {
             "Igiene Personale": "igiene_",
             "Medicinali": "med_"
         };
-        
+
         // Gestione del form
         document.getElementById('packing-form').addEventListener('submit', function(e) {
             e.preventDefault();
-              console.log("Struttura categorie:", JSON.stringify(categorie, null, 2));
+            console.log("Struttura categorie:", JSON.stringify(categorie, null, 2));
+            
             const formData = {
                 durata: document.getElementById('durata').value,
                 clima: document.getElementById('clima').value,
@@ -879,135 +1110,191 @@ Object.keys(risultati).forEach(item => {
                 outfit_primo_giorno: document.getElementById('outfit_primo_giorno').value,
                 outfit_ultimo_giorno: document.getElementById('outfit_ultimo_giorno').value
             };
-            
+
             console.log("Debug - Opzioni selezionate:", {
                 destinazione: formData.destinazione,
                 piscina: formData.piscina,
                 clima: formData.clima,
                 tipo_viaggio: formData.tipo_viaggio,
                 durata: formData.durata,
-                dimensione_bagaglio: formData.dimensione_bagaglio
+                dimensione_bagaglio: formData.dimensione_bagaglio,
+                eta: formData.eta
             });
-            
+
             const risultati = calcolaGuardaroba(formData);
             console.log("Debug - Risultati calcolati:", risultati);
 
-// Inserisci qui la soluzione delle categorie personalizzate
-let categoriePersonalizzate = JSON.parse(JSON.stringify(categorie)); // Clone profondo
+            // Inserisci qui la soluzione delle categorie personalizzate
+            let categoriePersonalizzate = JSON.parse(JSON.stringify(categorie)); // Clone profondo
 
             // Se si ha un costume ma non si va al mare, cambia il titolo della categoria
-if (risultati.costumi && risultati.costumi > 0 && formData.destinazione !== "mare") {
-    // Rinomina la categoria "Per il mare" in "Per la piscina"
-    categoriePersonalizzate["Per la piscina"] = categoriePersonalizzate["Per il mare"];
-    delete categoriePersonalizzate["Per il mare"];
-}
+            if (risultati.costumi && risultati.costumi > 0 && formData.destinazione !== "mare") {
+                // Rinomina la categoria "Per il mare" in "Per la piscina"
+                categoriePersonalizzate["Per la piscina"] = categoriePersonalizzate["Per il mare"];
+                delete categoriePersonalizzate["Per il mare"];
+            }
 
-            
             // Debug - monitoriamo i risultati prima della visualizzazione
             console.log("Risultati prima della visualizzazione:", risultati);
-            
+
             // Visualizziamo i risultati
             const resultDiv = document.getElementById('packing-result');
             resultDiv.innerHTML = '';
-            
+
             // Organizziamo gli indumenti per categoria
-            // Organizziamo gli indumenti per categoria
-for (const categoria in categoriePersonalizzate) {
-    let hasItems = false;
-    let categoryHtml = `<div class="category">${categoria}</div><ul class="packing-list">`;
-    
-    categoriePersonalizzate[categoria].forEach(item => {
- console.log(`Item: ${item}, Label: ${indumentiLabels[item]}, Presente: ${item in indumentiLabels}`);
-    
-        
-        console.log(`Verifica item '${item}':`, {
-            presente: item in risultati,
-            valore: risultati[item],
-            maggioreDiZero: risultati[item] > 0
-        });
-        
-        if (risultati[item] && risultati[item] > 0) {
-            const label = indumentiLabels[item];
-            if (label) {
-                categoryHtml += `<li>${label}: <span>${risultati[item]}</span></li>`;
-                hasItems = true;
-            }
-        }
-    });
-    
-    categoryHtml += '</ul>';
-    
-    if (hasItems) {
-        resultDiv.innerHTML += categoryHtml;
-    }
-}
-            
-            // Aggiungiamo i consigli per la destinazione
-            const destinationTipsDiv = document.getElementById('destination-tips');
-            destinationTipsDiv.innerHTML = '';
-            
-            // Consigli per destinazione
-            if (destinationTips[formData.destinazione]) {
-                destinationTips[formData.destinazione].forEach(tip => {
-                    destinationTipsDiv.innerHTML += `<div class="tip-item">${tip}</div>`;
-                });
-            }
-            
-            // Aggiungiamo consigli basati su clima
-            if (climateTips[formData.clima]) {
-                climateTips[formData.clima].forEach(tip => {
-                    destinationTipsDiv.innerHTML += `<div class="tip-item">${tip}</div>`;
-                });
-            }
-            
-            // Aggiungiamo consigli stagionali
-            if (seasonalTips[formData.stagione]) {
-                seasonalTips[formData.stagione].forEach(tip => {
-                    destinationTipsDiv.innerHTML += `<div class="tip-item">${tip}</div>`;
-                });
-            }
-            
-            // Mostriamo la sezione dei risultati
-            document.getElementById('result').style.display = 'block';
-            
-            // Aggiungiamo gli elementi aggiuntivi selezionati
-            resultDiv.innerHTML += `<div class="category-header">Elementi Aggiuntivi</div>`;
-            
-            // Attraversiamo le categorie aggiuntive
-            for (const categoria in categorieAggiuntive) {
+            for (const categoria in categoriePersonalizzate) {
                 let hasItems = false;
                 let categoryHtml = `<div class="category">${categoria}</div><ul class="packing-list">`;
-                
-                // Troviamo tutti gli elementi selezionati per questa categoria
-                const prefix = categorieAggiuntive[categoria];
-                const checkboxes = document.querySelectorAll(`input[type="checkbox"][id^="${prefix}"]:checked`);
-                
-                checkboxes.forEach(checkbox => {
-                    const label = document.querySelector(`label[for="${checkbox.id}"]`).textContent;
-                    categoryHtml += `<li>${label}</li>`;
-                    hasItems = true;
+
+                categoriePersonalizzate[categoria].forEach(item => {
+                    console.log(`Item: ${item}, Label: ${indumentiLabels[item]}, Presente: ${item in indumentiLabels}`);
+
+                    console.log(`Verifica item '${item}':`, {
+                        presente: item in risultati,
+                        valore: risultati[item],
+                        maggioreDiZero: risultati[item] > 0
+                    });
+
+                    if (risultati[item] && risultati[item] > 0) {
+                        const label = indumentiLabels[item];
+                        if (label) {
+                            categoryHtml += `<li>${label}: <span>${risultati[item]}</span></li>`;
+                            hasItems = true;
+                        }
+                    }
                 });
-                
+
                 categoryHtml += '</ul>';
-                
+
                 if (hasItems) {
                     resultDiv.innerHTML += categoryHtml;
                 }
             }
             
+            // Aggiungiamo elementi specifici per età
+            if (formData.eta in categoriePerEta) {
+                for (const categoria in categoriePerEta[formData.eta]) {
+                    let hasItems = false;
+                    let categoryHtml = `<div class="category">${categoria}</div><ul class="packing-list">`;
+                    
+                    categoriePerEta[formData.eta][categoria].forEach(item => {
+                        if (risultati[item] && risultati[item] > 0) {
+                            const label = nuoveEtichette[item];
+                            if (label) {
+                                categoryHtml += `<li>${label}: <span>${risultati[item]}</span></li>`;
+                                hasItems = true;
+                            }
+                        }
+                    });
+                    
+                    categoryHtml += '</ul>';
+                    
+                    if (hasItems) {
+                        resultDiv.innerHTML += categoryHtml;
+                    }
+                }
+            }
+
+            // Raccogliamo gli elementi selezionati per filtrare i consigli
+            const elementiSelezionati = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                elementiSelezionati.push(checkbox.id);
+            });
+
+            // Aggiungiamo i consigli per la destinazione
+            const destinationTipsDiv = document.getElementById('destination-tips');
+            destinationTipsDiv.innerHTML = '';
+
+            // Filtriamo i consigli
+            let consigliDestinazione = [];
+            if (destinationTips[formData.destinazione]) {
+                consigliDestinazione = filtraConsigli(destinationTips[formData.destinazione], risultati, elementiSelezionati);
+                consigliDestinazione.forEach(tip => {
+                    destinationTipsDiv.innerHTML += `<div class="tip-item">${tip}</div>`;
+                });
+            }
+
+            // Aggiungiamo consigli basati su clima
+            if (climateTips[formData.clima]) {
+                const consigliClima = filtraConsigli(climateTips[formData.clima], risultati, elementiSelezionati);
+                consigliClima.forEach(tip => {
+                    destinationTipsDiv.innerHTML += `<div class="tip-item">${tip}</div>`;
+                });
+            }
+
+            // Aggiungiamo consigli stagionali
+            if (seasonalTips[formData.stagione]) {
+                const consigliStagionali = filtraConsigli(seasonalTips[formData.stagione], risultati, elementiSelezionati);
+                consigliStagionali.forEach(tip => {
+                    destinationTipsDiv.innerHTML += `<div class="tip-item">${tip}</div>`;
+                });
+            }
+
+            // Mostriamo la sezione dei risultati
+            document.getElementById('result').style.display = 'block';
+
+            // Aggiungiamo gli elementi aggiuntivi selezionati
+            resultDiv.innerHTML += `<div class="category-header">Elementi Aggiuntivi</div>`;
+
+            // Attraversiamo le categorie aggiuntive
+            const elementiAggiuntivi = {};
+            for (const categoria in categorieAggiuntive) {
+                let hasItems = false;
+                let categoryHtml = `<div class="category">${categoria}</div><ul class="packing-list">`;
+                elementiAggiuntivi[categoria] = [];
+
+                // Troviamo tutti gli elementi selezionati per questa categoria
+                const prefix = categorieAggiuntive[categoria];
+                const checkboxes = document.querySelectorAll(`input[type="checkbox"][id^="${prefix}"]:checked`);
+
+                checkboxes.forEach(checkbox => {
+                    const label = document.querySelector(`label[for="${checkbox.id}"]`).textContent;
+                    categoryHtml += `<li>${label}</li>`;
+                    elementiAggiuntivi[categoria].push(label);
+                    hasItems = true;
+                });
+
+                categoryHtml += '</ul>';
+
+                if (hasItems) {
+                    resultDiv.innerHTML += categoryHtml;
+                }
+            }
+
+            // Rimuoviamo i listener vecchi per evitare duplicati
+            const btnPrint = document.getElementById('btn-print');
+            const btnSave = document.getElementById('btn-save');
+            const btnMarkdown = document.getElementById('btn-markdown');
+            
+            btnPrint.replaceWith(btnPrint.cloneNode(true));
+            btnSave.replaceWith(btnSave.cloneNode(true));
+            if (btnMarkdown) btnMarkdown.replaceWith(btnMarkdown.cloneNode(true));
+            
             // Event listener per il pulsante di stampa
             document.getElementById('btn-print').addEventListener('click', function() {
                 window.print();
             });
-            
+
             // Event listener per il pulsante di salvataggio come PDF
             document.getElementById('btn-save').addEventListener('click', function() {
                 // Avvisa l'utente che verrà utilizzata la funzione di stampa del browser
                 alert('Per salvare come PDF, seleziona "Salva come PDF" o "Microsoft Print to PDF" nella finestra di stampa che si aprirà.');
                 window.print();
             });
+            
+            // Event listener per il pulsante di esportazione Markdown
+            document.getElementById('btn-markdown').addEventListener('click', function() {
+                // Raccogliamo tutti i consigli mostrati
+                const consigli = Array.from(document.querySelectorAll('#destination-tips .tip-item')).map(el => el.textContent);
+                
+                // Generiamo il Markdown
+                const markdown = generaMarkdown(risultati, consigli, elementiAggiuntivi, categoriePersonalizzate, formData.eta);
+                
+                // Scarichiamo il file
+                scaricaFile(markdown, 'lista_valigia.md');
+            });
         });
-        
+
         // Aggiungiamo gli stili per la stampa
         const printStyles = document.createElement('style');
         printStyles.textContent = `
