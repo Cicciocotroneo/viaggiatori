@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -579,7 +578,7 @@
                 pantaloni: { formula: "Math.ceil(durata_effettiva * 0.4)" },
                 maglie: { formula: "Math.ceil(durata_effettiva * 0.5)" },
                 calzini: { formula: "durata + 1" },
-                pigiama: { formula: "Math.ceil(durata / 3) || 1" }
+                pigiama: { formula: "Math.ceil(durata / 5) || 1" }
             },
             
             // Modificatori per clima
@@ -665,11 +664,15 @@
             const genere = formData.genere;
             const eta = formData.eta;
             const lavanderia = formData.lavanderia === "si";
-            const piscina = formData.piscina === "si";
+            const piscina = formData.piscina;
             const stesso_outfit_primo_giorno = formData.outfit_primo_giorno === "si";
             const outfit_ultimo_giorno = formData.outfit_ultimo_giorno;
             
-            // Calcolo durata effettiva
+            // Debug
+            console.log("Debug interno - Valori di input:", {
+                durata, clima, destinazione, tipo_viaggio, 
+                eventi_speciali, dimensione_bagaglio, piscina
+            });
             let durata_effettiva = durata;
             
             // Adattamento per il primo giorno
@@ -707,7 +710,7 @@
             risultati.pantaloni = Math.ceil(durata_effettiva * 0.4);
             risultati.maglie = Math.ceil(durata_effettiva * 0.5 * (packingRules.clima[clima].maglie || 1));
             risultati.calzini = durata + 1;
-            risultati.pigiama = Math.ceil(durata / 3) || 1; // Un pigiama ogni 3 giorni, minimo 1
+            risultati.pigiama = Math.ceil(durata / 5) || 1; // Un pigiama ogni 5 giorni, minimo 1
             
             // Aggiungiamo indumenti specifici per clima
             Object.keys(packingRules.clima[clima]).forEach(item => {
@@ -743,8 +746,16 @@
                 });
             }
             
+            // Debug interno - Controllo opzione piscina
+            console.log("Debug - Controllo piscina:", {
+                piscina: piscina,
+                destinazione: destinazione,
+                condizione: (piscina === "si" && destinazione !== "mare")
+            });
+            
             // Aggiungiamo costumi se c'è una piscina (per destinazioni diverse dal mare)
             if (piscina === "si" && destinazione !== "mare") {
+                console.log("Debug - Aggiungo costume per piscina");
                 // In caso di bagaglio cabin e durata fino a 7 giorni, limita a 1 costume
                 if (dimensione_bagaglio === "piccolo" && durata <= 7) {
                     risultati.costumi = 1;
@@ -770,10 +781,18 @@
                 risultati.outfit_eventi_speciali = eventi_speciali;
             }
             
+            // Non facciamo il controllo undefind qui dato che lo facciamo dopo nella visualizzazione
             // Applichiamo il fattore di riduzione a tutto tranne l'intimo
             Object.keys(risultati).forEach(item => {
-                if (item !== "intimo" && item !== undefined && risultati[item] !== undefined) {
+                if (item !== "intimo" && risultati[item] !== undefined) {
                     risultati[item] = Math.ceil(risultati[item] * fattore_riduzione);
+                    // Se dopo la riduzione il valore è 0, lo impostiamo a 1 per il minimo necessario
+                    // (eccetto per gli outfit speciali che possono essere 0)
+                    if (risultati[item] === 0 && 
+                        item !== "outfit_eventi_speciali" && 
+                        item !== "abbigliamento_tecnico") {
+                        risultati[item] = 1;
+                    }
                 }
             });
             
@@ -848,7 +867,20 @@
                 outfit_ultimo_giorno: document.getElementById('outfit_ultimo_giorno').value
             };
             
+            console.log("Debug - Opzioni selezionate:", {
+                destinazione: formData.destinazione,
+                piscina: formData.piscina,
+                clima: formData.clima,
+                tipo_viaggio: formData.tipo_viaggio,
+                durata: formData.durata,
+                dimensione_bagaglio: formData.dimensione_bagaglio
+            });
+            
             const risultati = calcolaGuardaroba(formData);
+            console.log("Debug - Risultati calcolati:", risultati);
+            
+            // Debug - monitoriamo i risultati prima della visualizzazione
+            console.log("Risultati prima della visualizzazione:", risultati);
             
             // Visualizziamo i risultati
             const resultDiv = document.getElementById('packing-result');
@@ -860,6 +892,12 @@
                 let categoryHtml = `<div class="category">${categoria}</div><ul class="packing-list">`;
                 
                 categorie[categoria].forEach(item => {
+                    console.log(`Verifica item '${item}':`, {
+                        presente: item in risultati,
+                        valore: risultati[item],
+                        maggioreDiZero: risultati[item] > 0
+                    });
+                    
                     if (risultati[item] && risultati[item] > 0) {
                         const label = indumentiLabels[item];
                         if (label) {
