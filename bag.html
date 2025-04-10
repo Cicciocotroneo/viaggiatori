@@ -1349,17 +1349,28 @@ const indumentiLabelsFinali = {...indumentiLabels, ...indumentiLabelsGenere};
                 window.print();
             });
             
-            // Event listener per il pulsante di esportazione Markdown
-            document.getElementById('btn-markdown').addEventListener('click', function() {
-                // Raccogliamo tutti i consigli mostrati
-                const consigli = Array.from(document.querySelectorAll('#destination-tips .tip-item')).map(el => el.textContent);
-                
-                // Generiamo il Markdown
-                const markdown = generaMarkdown(risultati, consigli, elementiAggiuntivi, categoriePersonalizzate, formData.eta);
-                
-                // Scarichiamo il file
-                scaricaFile(markdown, 'lista_valigia.md');
-            });
+// Event listener per il pulsante di esportazione Markdown
+document.getElementById('btn-markdown').addEventListener('click', function() {
+    try {
+        // Log per debug
+        console.log("Bottone Markdown cliccato");
+        
+        // Raccogliamo tutti i consigli mostrati
+        const consigli = Array.from(document.querySelectorAll('#destination-tips .tip-item')).map(el => el.textContent);
+        console.log("Consigli raccolti:", consigli);
+        
+        // Generiamo il Markdown
+        const markdown = generaMarkdown(risultati, consigli, elementiAggiuntivi, categoriePersonalizzate, formData.eta);
+        console.log("Markdown generato:", markdown.substring(0, 100) + "...");
+        
+        // Scarichiamo il file
+        scaricaFile(markdown, 'lista_valigia.md');
+        console.log("File scaricato");
+    } catch (error) {
+        console.error("Errore durante l'esportazione Markdown:", error);
+        alert("Si è verificato un errore durante l'esportazione: " + error.message);
+    }
+});
 });
 
 // Aggiungi un event listener per il pulsante reset
