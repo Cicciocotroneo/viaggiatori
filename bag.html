@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ottimizzatore Valigia</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --light-color: #f5f5f5;
+            --dark-color: #333;
+            --success-color: #66bb6a;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 5px rgba(79, 195, 247, 0.5);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-reset {
+            background-color: #e0e0e0;
+            color: var(--dark-color);
+            margin-left: 10px;
+        }
+        
+        .btn-reset:hover {
+            background-color: #bdbdbd;
+        }
+        
+        .action-buttons {
+            text-align: center;
+        }
+        
+        .result-actions {
+            margin-top: 25px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+        
+        .btn-action {
+            background-color: var(--secondary-color);
+            margin: 0 10px;
+        }
+        
+        .btn-action:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .result {
+            margin-top: 30px;
+            display: none;
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--accent-color);
+        }
+        
+        .tips-section {
+            margin-top: 25px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        
+        .tips-section h3 {
+            color: var(--secondary-color);
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+        
+        .tip-item {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .tip-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        .result h2 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .packing-list {
+            list-style-type: none;
+        }
+        
+        .packing-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ccc;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .packing-list span {
+            font-weight: 600;
+        }
+        
+        .category {
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .btn-reset {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ottimizzatore Valigia</h1>
+        
+        <form id="packing-form">
+            <div class="form-group">
+                <label for="durata">Durata del viaggio (giorni):</label>
+                <input type="number" id="durata" min="1" max="30" value="7" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="clima">Clima:</label>
+                <select id="clima" required>
+                    <option value="freddo">Freddo (sotto 10°C)</option>
+                    <option value="temperato" selected>Temperato (10-20°C)</option>
+                    <option value="caldo">Caldo (20-30°C)</option>
+                    <option value="tropicale">Tropicale (sopra 30°C)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="stagione">Stagione:</label>
+                <select id="stagione" required>
+                    <option value="primavera">Primavera</option>
+                    <option value="estate">Estate</option>
+                    <option value="autunno">Autunno</option>
+                    <option value="inverno">Inverno</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="destinazione">Destinazione:</label>
+                <select id="destinazione" required>
+                    <option value="mare">Mare</option>
+                    <option value="montagna">Montagna</option>
+                    <option value="citta">Città</option>
+                    <option value="campagna">Campagna</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="tipo_viaggio">Tipologia di viaggio:</label>
+                <select id="tipo_viaggio" required>
+                    <option value="relax">Relax</option>
+                    <option value="avventura">Avventura</option>
+                    <option value="business">Business</option>
+                    <option value="piacere_citta">Piacere in città</option>
+                    <option value="evento_speciale">Evento speciale</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="eventi_speciali">Numero di eventi speciali:</label>
+                <input type="number" id="eventi_speciali" min="0" max="10" value="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="dimensione_bagaglio">Dimensione bagaglio:</label>
+                <select id="dimensione_bagaglio" required>
+                    <option value="piccolo">Piccolo (cabin)</option>
+                    <option value="medio" selected>Medio</option>
+                    <option value="grande">Grande</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="genere">Genere:</label>
+                <select id="genere" required>
+                    <option value="uomo">Uomo</option>
+                    <option value="donna">Donna</option>
+                    <option value="non_binario">Non binario</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="eta">Età:</label>
+                <select id="eta" required>
+                    <option value="bambino">Bambino (0-12)</option>
+                    <option value="adolescente">Adolescente (13-18)</option>
+                    <option value="adulto" selected>Adulto (19-65)</option>
+                    <option value="anziano">Senior (65+)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="lavanderia">Accesso a servizi di lavanderia:</label>
+                <select id="lavanderia" required>
+                    <option value="si">Sì</option>
+                    <option value="no" selected>No</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="outfit_primo_giorno">Utilizzerai lo stesso outfit per il viaggio di andata e il primo giorno?</label>
+                <select id="outfit_primo_giorno" required>
+                    <option value="si">Sì</option>
+                    <option value="no" selected>No</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="outfit_ultimo_giorno">Per l'ultimo giorno:</label>
+                <select id="outfit_ultimo_giorno" required>
+                    <option value="singolo" selected>Un singolo outfit per attività e viaggio di ritorno</option>
+                    <option value="doppio">Due outfit separati</option>
+                </select>
+            </div>
+            
+            <div class="action-buttons">
+                <button type="submit" class="btn">Calcola</button>
+                <button type="reset" class="btn btn-reset">Reset</button>
+            </div>
+        </form>
+        
+        <div class="result" id="result">
+            <h2>La tua lista ottimizzata</h2>
+            <div id="packing-result">
+                <!-- I risultati saranno inseriti qui -->
+            </div>
+            <div class="tips-section" id="tips-section">
+                <h3>Consigli per la tua destinazione</h3>
+                <div id="destination-tips">
+                    <!-- I consigli per la destinazione verranno inseriti qui -->
+                </div>
+            </div>
+            <div class="action-buttons result-actions">
+                <button id="btn-print" class="btn btn-action">Stampa lista</button>
+                <button id="btn-save" class="btn btn-action">Salva come PDF</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Database di consigli per destinazioni specifiche
+        const destinationTips = {
+            mare: [
+                "Porta una borsa impermeabile per riporre gli indumenti bagnati",
+                "Non dimenticare la protezione solare e occhiali da sole",
+                "Considera di portare un cappello leggero per proteggerti dal sole",
+                "Se pianifichi escursioni subacquee, valuta di portare una maglietta anti-UV",
+                "Porta un libro o un e-reader impermeabile per la spiaggia"
+            ],
+            montagna: [
+                "Porta indumenti a strati per adattarti ai cambi di temperatura",
+                "Non dimenticare una torcia frontale e batterie di ricambio",
+                "Un thermos è utile per bevande calde durante escursioni",
+                "Porta un kit di pronto soccorso base per emergenze",
+                "Considera di portare bastoni da trekking se prevedi escursioni"
+            ],
+            citta: [
+                "Includi un paio di scarpe eleganti ma comode per le cene fuori",
+                "Una borsa/zaino leggero anti-borseggio è consigliato per girare in città",
+                "Porta una power bank per ricaricare i dispositivi durante la giornata",
+                "Una guida tascabile o app offline della città può essere utile",
+                "Un ombrello pieghevole occupa poco spazio ma può salvare una giornata"
+            ],
+            campagna: [
+                "Non dimenticare repellente per insetti e crema per punture",
+                "Includi una giacca impermeabile leggera, anche se il meteo sembra buono",
+                "Un binocolo può arricchire l'esperienza di osservazione natura",
+                "Scarpe resistenti e impermeabili sono essenziali",
+                "Una borraccia termica manterrà fresche le bevande nelle giornate calde"
+            ]
+        };
+        
+        // Consigli basati sul clima
+        const climateTips = {
+            freddo: [
+                "Porta un balsamo per labbra per prevenire screpolature",
+                "Non dimenticare guanti, sciarpa e cappello termici",
+                "Considera calze termiche per mantenere i piedi caldi"
+            ],
+            temperato: [
+                "Porta indumenti versatili e stratificabili",
+                "Un impermeabile leggero è sempre utile"
+            ],
+            caldo: [
+                "Indumenti in cotone o tessuti traspiranti sono ideali",
+                "Non dimenticare creme solari e dopo-sole"
+            ],
+            tropicale: [
+                "Porta indumenti leggeri e traspiranti che si asciugano velocemente",
+                "Considera un repellente per insetti ad alta protezione",
+                "Un cappello a tesa larga offre maggiore protezione del viso"
+            ]
+        };
+        
+        // Consigli stagionali
+        const seasonalTips = {
+            primavera: [
+                "Prevedi temperature variabili e porta uno strato in più",
+                "Un impermeabile leggero è essenziale per piogge improvvise"
+            ],
+            estate: [
+                "Privilegia tessuti leggeri e traspiranti",
+                "Considera orari e percorsi all'ombra per le tue visite"
+            ],
+            autunno: [
+                "Porta uno strato caldo extra per le serate",
+                "Le temperature possono variare molto, opta per il layering"
+            ],
+            inverno: [
+                "Non sottovalutare il freddo, anche in destinazioni mediterranee",
+                "Calzature impermeabili con buona aderenza sono fondamentali"
+            ]
+        };
+        
+        // Dati di riferimento per l'algoritmo
+        const packingRules = {
+            // Regole base per tipo di indumento
+            base: {
+                intimo: { formula: "durata + 2" },
+                t_shirt: { formula: "Math.ceil(durata_effettiva * 0.7)" },
+                pantaloni: { formula: "Math.ceil(durata_effettiva * 0.4)" },
+                maglie: { formula: "Math.ceil(durata_effettiva * 0.5)" },
+                calzini: { formula: "durata + 1" }
+            },
+            
+            // Modificatori per clima
+            clima: {
+                freddo: {
+                    t_shirt: 0.7,
+                    maglie: 1.3,
+                    giacca_pesante: 1,
+                    sciarpa: 1,
+                    guanti: 1,
+                    berretto: 1
+                },
+                temperato: {
+                    t_shirt: 1.0,
+                    maglie: 1.0,
+                    giacca_leggera: 1
+                },
+                caldo: {
+                    t_shirt: 1.3,
+                    maglie: 0.7,
+                    cappello: 1
+                },
+                tropicale: {
+                    t_shirt: 1.5,
+                    maglie: 0.5,
+                    cappello: 1
+                }
+            },
+            
+            // Modificatori per destinazione
+            destinazione: {
+                mare: {
+                    costumi: { formula: "Math.ceil(durata * 0.5)" },
+                    copricostumi: { formula: "Math.min(2, Math.ceil(durata * 0.3))" },
+                    telo_mare: 1,
+                    infradito: 1
+                },
+                montagna: {
+                    giacca_impermeabile: 1,
+                    scarponi: 1,
+                    maglioni: { formula: "Math.ceil(durata * 0.3)" }
+                },
+                citta: {
+                    scarpe_comode: 1
+                },
+                campagna: {
+                    scarpe_trekking: 1,
+                    cappello: 1
+                }
+            },
+            
+            // Modificatori per tipo di viaggio
+            tipo_viaggio: {
+                relax: {},
+                avventura: {
+                    scarpe_trekking: 1,
+                    abbigliamento_tecnico: { formula: "Math.ceil(durata * 0.3)" }
+                },
+                business: {
+                    camicie: { formula: "durata - 1" },
+                    completi: { formula: "Math.ceil(durata * 0.3)" },
+                    cravatte: { formula: "Math.ceil(durata * 0.3)" }
+                },
+                piacere_citta: {
+                    t_shirt_modifier: 1.1,
+                    scarpe_comode: 1,
+                    outfit_casual_elegante: { formula: "Math.ceil(durata * 0.3)" }
+                },
+                evento_speciale: {
+                    outfit_elegante: 1
+                }
+            }
+        };
+        
+        // Funzione principale per calcolare gli indumenti
+        function calcolaGuardaroba(formData) {
+            const durata = parseInt(formData.durata);
+            const clima = formData.clima;
+            const stagione = formData.stagione;
+            const destinazione = formData.destinazione;
+            const tipo_viaggio = formData.tipo_viaggio;
+            const eventi_speciali = parseInt(formData.eventi_speciali);
+            const dimensione_bagaglio = formData.dimensione_bagaglio;
+            const genere = formData.genere;
+            const eta = formData.eta;
+            const lavanderia = formData.lavanderia === "si";
+            const stesso_outfit_primo_giorno = formData.outfit_primo_giorno === "si";
+            const outfit_ultimo_giorno = formData.outfit_ultimo_giorno;
+            
+            // Calcolo durata effettiva
+            let durata_effettiva = durata;
+            
+            // Adattamento per il primo giorno
+            if (stesso_outfit_primo_giorno) {
+                durata_effettiva -= 1;
+            }
+            
+            // Adattamento per l'ultimo giorno
+            // Non applichiamo riduzioni, ma potremmo aggiungere un outfit se necessario
+            if (outfit_ultimo_giorno === "doppio") {
+                durata_effettiva += 1; // Serve un outfit extra per il viaggio di ritorno
+            }
+            
+            // Minimo 1 giorno di outfit
+            durata_effettiva = Math.max(1, durata_effettiva);
+            
+            // Calcolo fattore di riduzione per bagaglio
+            let fattore_riduzione = 1.0;
+            if (dimensione_bagaglio === "piccolo") {
+                fattore_riduzione = 0.7;
+            }
+            
+            // Modifica per lavanderia
+            if (lavanderia && durata > 7) {
+                fattore_riduzione *= 0.7;
+            }
+            
+            // Oggetto per i risultati
+            const risultati = {};
+            
+            // Calcolo indumenti base
+            risultati.intimo = durata + 2; // Non applichiamo mai riduzioni all'intimo
+            risultati.t_shirt = Math.ceil(durata_effettiva * 0.7 * (packingRules.clima[clima].t_shirt || 1));
+            risultati.pantaloni = Math.ceil(durata_effettiva * 0.4);
+            risultati.maglie = Math.ceil(durata_effettiva * 0.5 * (packingRules.clima[clima].maglie || 1));
+            risultati.calzini = durata + 1;
+            
+            // Aggiungiamo indumenti specifici per clima
+            Object.keys(packingRules.clima[clima]).forEach(item => {
+                if (item !== "t_shirt" && item !== "maglie") {
+                    if (typeof packingRules.clima[clima][item] === "number") {
+                        risultati[item] = packingRules.clima[clima][item];
+                    }
+                }
+            });
+            
+            // Aggiungiamo indumenti specifici per destinazione
+            Object.keys(packingRules.destinazione[destinazione]).forEach(item => {
+                if (typeof packingRules.destinazione[destinazione][item] === "number") {
+                    risultati[item] = packingRules.destinazione[destinazione][item];
+                } else if (typeof packingRules.destinazione[destinazione][item] === "object") {
+                    const formula = packingRules.destinazione[destinazione][item].formula;
+                    // Eseguiamo la formula in modo sicuro
+                    risultati[item] = eval(formula);
+                }
+            });
+            
+            // Aggiungiamo indumenti specifici per tipo di viaggio
+            Object.keys(packingRules.tipo_viaggio[tipo_viaggio]).forEach(item => {
+                if (item === "t_shirt_modifier") {
+                    risultati.t_shirt = Math.ceil(risultati.t_shirt * packingRules.tipo_viaggio[tipo_viaggio][item]);
+                } else if (typeof packingRules.tipo_viaggio[tipo_viaggio][item] === "number") {
+                    risultati[item] = packingRules.tipo_viaggio[tipo_viaggio][item];
+                } else if (typeof packingRules.tipo_viaggio[tipo_viaggio][item] === "object") {
+                    const formula = packingRules.tipo_viaggio[tipo_viaggio][item].formula;
+                    // Eseguiamo la formula in modo sicuro
+                    risultati[item] = eval(formula);
+                }
+            });
+            
+            // Aggiungiamo outfit per eventi speciali
+            if (eventi_speciali > 0) {
+                risultati.outfit_eventi_speciali = eventi_speciali;
+            }
+            
+            // Applichiamo il fattore di riduzione a tutto tranne l'intimo
+            Object.keys(risultati).forEach(item => {
+                if (item !== "intimo") {
+                    risultati[item] = Math.ceil(risultati[item] * fattore_riduzione);
+                }
+            });
+            
+            return risultati;
+        }
+        
+        // Mappatura dei nomi degli indumenti per la visualizzazione
+        const indumentiLabels = {
+            intimo: "Intimo",
+            t_shirt: "T-shirt / Magliette",
+            pantaloni: "Pantaloni / Gonne",
+            maglie: "Maglie / Felpe",
+            calzini: "Calzini",
+            giacca_pesante: "Giacca pesante",
+            giacca_leggera: "Giacca leggera",
+            sciarpa: "Sciarpa",
+            guanti: "Guanti",
+            berretto: "Berretto",
+            cappello: "Cappello",
+            costumi: "Costumi da bagno",
+            copricostumi: "Copricostumi / Parei",
+            telo_mare: "Telo mare",
+            infradito: "Infradito",
+            giacca_impermeabile: "Giacca impermeabile",
+            scarponi: "Scarponi",
+            maglioni: "Maglioni",
+            scarpe_comode: "Scarpe comode da passeggio",
+            scarpe_trekking: "Scarpe da trekking",
+            abbigliamento_tecnico: "Abbigliamento tecnico",
+            camicie: "Camicie / Bluse",
+            completi: "Completi / Tailleur",
+            cravatte: "Cravatte / Accessori formali",
+            outfit_casual_elegante: "Outfit casual-elegante",
+            outfit_elegante: "Outfit elegante",
+            outfit_eventi_speciali: "Outfit per eventi speciali"
+        };
+        
+        // Categorie per organizzare gli indumenti nell'output
+        const categorie = {
+            "Indumenti base": ["intimo", "t_shirt", "pantaloni", "maglie", "calzini"],
+            "Capispalla e accessori": ["giacca_pesante", "giacca_leggera", "sciarpa", "guanti", "berretto", "cappello", "giacca_impermeabile"],
+            "Calzature": ["scarpe_comode", "scarpe_trekking", "scarponi", "infradito"],
+            "Outfit specifici": ["outfit_casual_elegante", "outfit_elegante", "outfit_eventi_speciali", "abbigliamento_tecnico", "camicie", "completi", "cravatte"],
+            "Per il mare": ["costumi", "copricostumi", "telo_mare"]
+        };
+        
+        // Gestione del form
+        document.getElementById('packing-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                durata: document.getElementById('durata').value,
+                clima: document.getElementById('clima').value,
+                stagione: document.getElementById('stagione').value,
+                destinazione: document.getElementById('destinazione').value,
+                tipo_viaggio: document.getElementById('tipo_viaggio').value,
+                eventi_speciali: document.getElementById('eventi_speciali').value,
+                dimensione_bagaglio: document.getElementById('dimensione_bagaglio').value,
+                genere: document.getElementById('genere').value,
+                eta: document.getElementById('eta').value,
+                lavanderia: document.getElementById('lavanderia').value,
+                outfit_primo_giorno: document.getElementById('outfit_primo_giorno').value,
+                outfit_ultimo_giorno: document.getElementById('outfit_ultimo_giorno').value
+            };
+            
+            const risultati = calcolaGuardaroba(formData);
+            
+            // Visualizziamo i risultati
+            const resultDiv = document.getElementById('packing-result');
+            resultDiv.innerHTML = '';
+            
+            // Organizziamo gli indumenti per categoria
+            for (const categoria in categorie) {
+                let hasItems = false;
+                let categoryHtml = `<div class="category">${categoria}</div><ul class="packing-list">`;
+                
+                categorie[categoria].forEach(item => {
+                    if (risultati[item] && risultati[item] > 0) {
+                        categoryHtml += `<li>${indumentiLabels[item]}: <span>${risultati[item]}</span></li>`;
+                        hasItems = true;
+                    }
+                });
+                
+                categoryHtml += '</ul>';
+                
+                if (hasItems) {
+                    resultDiv.innerHTML += categoryHtml;
+                }
+            }
+            
+            // Aggiungiamo i consigli per la destinazione
+            const destinationTipsDiv = document.getElementById('destination-tips');
+            destinationTipsDiv.innerHTML = '';
+            
+            // Consigli per destinazione
+            if (destinationTips[formData.destinazione]) {
+                destinationTips[formData.destinazione].forEach(tip => {
+                    destinationTipsDiv.innerHTML += `<div class="tip-item">${tip}</div>`;
+                });
+            }
+            
+            // Aggiungiamo consigli basati su clima
+            if (climateTips[formData.clima]) {
+                climateTips[formData.clima].forEach(tip => {
+                    destinationTipsDiv.innerHTML += `<div class="tip-item">${tip}</div>`;
+                });
+            }
+            
+            // Aggiungiamo consigli stagionali
+            if (seasonalTips[formData.stagione]) {
+                seasonalTips[formData.stagione].forEach(tip => {
+                    destinationTipsDiv.innerHTML += `<div class="tip-item">${tip}</div>`;
+                });
+            }
+            
+            // Mostriamo la sezione dei risultati
+            document.getElementById('result').style.display = 'block';
+            
+            // Event listener per il pulsante di stampa
+            document.getElementById('btn-print').addEventListener('click', function() {
+                window.print();
+            });
+            
+            // Event listener per il pulsante di salvataggio come PDF
+            document.getElementById('btn-save').addEventListener('click', function() {
+                // Avvisa l'utente che verrà utilizzata la funzione di stampa del browser
+                alert('Per salvare come PDF, seleziona "Salva come PDF" o "Microsoft Print to PDF" nella finestra di stampa che si aprirà.');
+                window.print();
+            });
+        });
+        
+        // Aggiungiamo gli stili per la stampa
+        const printStyles = document.createElement('style');
+        printStyles.textContent = `
+            @media print {
+                body * {
+                    visibility: hidden;
+                }
+                .container {
+                    box-shadow: none;
+                }
+                #result, #result * {
+                    visibility: visible;
+                }
+                #result {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    background-color: white !important;
+                    border-left: none !important;
+                }
+                .result-actions {
+                    display: none !important;
+                }
+                .tips-section {
+                    border: none !important;
+                    break-inside: avoid;
+                }
+                h1, h2, h3 {
+                    color: #000 !important;
+                    break-after: avoid;
+                }
+                .packing-list li {
+                    break-inside: avoid;
+                }
+            }
+        `;
+        document.head.appendChild(printStyles);
+    </script>
+</body>
+</html>
