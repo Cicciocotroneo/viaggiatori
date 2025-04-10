@@ -1360,6 +1360,26 @@ const indumentiLabelsFinali = {...indumentiLabels, ...indumentiLabelsGenere};
                 // Scarichiamo il file
                 scaricaFile(markdown, 'lista_valigia.md');
             });
+// Aggiungi un event listener per il pulsante reset
+document.getElementById('packing-form').querySelector('.btn-reset').addEventListener('click', function(e) {
+    // Impedisci il comportamento predefinito del pulsante reset
+    e.preventDefault();
+    
+    // Reimposta tutti i campi del form ai loro valori predefiniti
+    document.getElementById('packing-form').reset();
+    
+    // Nascondi la sezione dei risultati
+    document.getElementById('result').style.display = 'none';
+    
+    // Svuota il contenuto dei risultati
+    document.getElementById('packing-result').innerHTML = '';
+    document.getElementById('destination-tips').innerHTML = '';
+    
+    // Riporta la pagina in cima al form
+    window.scrollTo(0, 0);
+});
+
+            
         });
 
         // Aggiungiamo gli stili per la stampa
