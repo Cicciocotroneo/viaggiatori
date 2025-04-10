@@ -696,7 +696,7 @@
         }
 
         // Funzione per generare il Markdown con caselle di controllo
-        function generaMarkdown(risultati, consigli, elementiAggiuntivi, categoriePersonalizzate, età) {
+        function generaMarkdown(risultati, consigli, elementiAggiuntivi, categoriePersonalizzate, età, etichette) {
             let markdown = "# Lista Valigia\n\n";
             
             // Funzione per generare una sezione di lista
@@ -714,7 +714,7 @@
                 
                 categoriePersonalizzate[categoria].forEach(item => {
                     if (risultati[item] && risultati[item] > 0) {
-                        const label = indumentiLabelsFinali[item];
+                        const label = etichette[item];
                         if (label) {
                             const quantita = risultati[item];
                             itemsCategoria.push(`${label}: ${quantita}`);
@@ -1360,7 +1360,7 @@ document.getElementById('btn-markdown').addEventListener('click', function() {
         console.log("Consigli raccolti:", consigli);
         
         // Generiamo il Markdown
-        const markdown = generaMarkdown(risultati, consigli, elementiAggiuntivi, categoriePersonalizzate, formData.eta);
+        const markdown = generaMarkdown(risultati, consigli, elementiAggiuntivi, categoriePersonalizzate, formData.eta, indumentiLabelsFinali);
         console.log("Markdown generato:", markdown.substring(0, 100) + "...");
         
         // Scarichiamo il file
