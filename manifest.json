@@ -2,7 +2,7 @@
   "name": "Smart Baggage",
   "short_name": "SmartBag",
   "description": "App per ottimizzare la preparazione della valigia",
-  "start_url": "./index.html",
+  "start_url": "./bag.html",
   "display": "standalone",
   "background_color": "#f5f5f5",
   "theme_color": "#4a6fa5",
