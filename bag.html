@@ -798,7 +798,16 @@
             
             return risultati;
         }
+        function filtraConsigli(consigli, risultati, elementiSelezionati) {
+    return consigli.filter(consiglio => {
+        // Evita consigli per oggetti già inclusi nella lista
+        if (risultati.cappello && consiglio.toLowerCase().includes("cappello")) return false;
+        if (elementiSelezionati.includes("tech_powerbank") && consiglio.toLowerCase().includes("power bank")) return false;
         
+        // Altri filtri per evitare ripetizioni
+        return true;
+    });
+}
         // Mappatura dei nomi degli indumenti per la visualizzazione
         const indumentiLabels = {
             intimo: "Intimo",
@@ -806,6 +815,7 @@
             pantaloni: "Pantaloni / Gonne",
             maglie: "Maglie / Felpe",
             calzini: "Calzini",
+            pigiama: "Pigiama / Abbigliamento notturno",
             giacca_pesante: "Giacca pesante",
             giacca_leggera: "Giacca leggera",
             sciarpa: "Sciarpa",
@@ -850,7 +860,7 @@
         // Gestione del form
         document.getElementById('packing-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+              console.log("Struttura categorie:", JSON.stringify(categorie, null, 2));
             const formData = {
                 durata: document.getElementById('durata').value,
                 clima: document.getElementById('clima').value,
@@ -878,6 +888,17 @@
             
             const risultati = calcolaGuardaroba(formData);
             console.log("Debug - Risultati calcolati:", risultati);
+
+// Inserisci qui la soluzione delle categorie personalizzate
+let categoriePersonalizzate = JSON.parse(JSON.stringify(categorie)); // Clone profondo
+
+            // Se si ha un costume ma non si va al mare, cambia il titolo della categoria
+if (risultati.costumi && risultati.costumi > 0 && formData.destinazione !== "mare") {
+    // Rinomina la categoria "Per il mare" in "Per la piscina"
+    categoriePersonalizzate["Per la piscina"] = categoriePersonalizzate["Per il mare"];
+    delete categoriePersonalizzate["Per il mare"];
+}
+
             
             // Debug - monitoriamo i risultati prima della visualizzazione
             console.log("Risultati prima della visualizzazione:", risultati);
@@ -887,32 +908,36 @@
             resultDiv.innerHTML = '';
             
             // Organizziamo gli indumenti per categoria
-            for (const categoria in categorie) {
-                let hasItems = false;
-                let categoryHtml = `<div class="category">${categoria}</div><ul class="packing-list">`;
-                
-                categorie[categoria].forEach(item => {
-                    console.log(`Verifica item '${item}':`, {
-                        presente: item in risultati,
-                        valore: risultati[item],
-                        maggioreDiZero: risultati[item] > 0
-                    });
-                    
-                    if (risultati[item] && risultati[item] > 0) {
-                        const label = indumentiLabels[item];
-                        if (label) {
-                            categoryHtml += `<li>${label}: <span>${risultati[item]}</span></li>`;
-                            hasItems = true;
-                        }
-                    }
-                });
-                
-                categoryHtml += '</ul>';
-                
-                if (hasItems) {
-                    resultDiv.innerHTML += categoryHtml;
-                }
+            // Organizziamo gli indumenti per categoria
+for (const categoria in categoriePersonalizzate) {
+    let hasItems = false;
+    let categoryHtml = `<div class="category">${categoria}</div><ul class="packing-list">`;
+    
+    categoriePersonalizzate[categoria].forEach(item => {
+ console.log(`Item: ${item}, Label: ${indumentiLabels[item]}, Presente: ${item in indumentiLabels}`);
+    
+        
+        console.log(`Verifica item '${item}':`, {
+            presente: item in risultati,
+            valore: risultati[item],
+            maggioreDiZero: risultati[item] > 0
+        });
+        
+        if (risultati[item] && risultati[item] > 0) {
+            const label = indumentiLabels[item];
+            if (label) {
+                categoryHtml += `<li>${label}: <span>${risultati[item]}</span></li>`;
+                hasItems = true;
             }
+        }
+    });
+    
+    categoryHtml += '</ul>';
+    
+    if (hasItems) {
+        resultDiv.innerHTML += categoryHtml;
+    }
+}
             
             // Aggiungiamo i consigli per la destinazione
             const destinationTipsDiv = document.getElementById('destination-tips');
