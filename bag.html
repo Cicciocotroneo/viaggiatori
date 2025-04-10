@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ottimizzatore Valigia</title>
+    <title>Smart Baggage</title>
     <style>
         :root {
             --primary-color: #4a6fa5;
@@ -12,7 +12,56 @@
             --light-color: #f5f5f5;
             --dark-color: #333;
             --success-color: #66bb6a;
+        .checkboxes {
+            margin-bottom: 30px;
         }
+        
+        .checkbox-header {
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-left: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+            margin-bottom: 8px;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        
+        .checkbox-item label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+        
+        h3 {
+            color: var(--primary-color);
+            margin: 30px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--accent-color);
+        }
+        
+        .category-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
         
         * {
             box-sizing: border-box;
@@ -204,7 +253,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Ottimizzatore Valigia</h1>
+        <h1>Smart Baggage</h1>
         
         <form id="packing-form">
             <div class="form-group">
@@ -310,107 +359,105 @@
                 </select>
             </div>
             
-            <h3 class="section-title">Prodotti per l'igiene personale</h3>
-            <div class="checkbox-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="spazzolino" checked>
-                    <label for="spazzolino">Spazzolino da denti</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="dentifricio" checked>
-                    <label for="dentifricio">Dentifricio</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="deodorante" checked>
-                    <label for="deodorante">Deodorante</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="shampoo" checked>
-                    <label for="shampoo">Shampoo</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="bagnodoccia" checked>
-                    <label for="bagnodoccia">Bagnoschiuma/Docciaschiuma</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="creme">
-                    <label for="creme">Creme specifiche</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="rasoio">
-                    <label for="rasoio">Rasoio</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="asciugacapelli">
-                    <label for="asciugacapelli">Asciugacapelli</label>
+            <h3>Elementi Aggiuntivi</h3>
+            
+            <div class="form-group checkboxes">
+                <label class="checkbox-header">Tecnologia:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tech_computer" name="tech_computer">
+                        <label for="tech_computer">Computer</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tech_cellulare" name="tech_cellulare" checked>
+                        <label for="tech_cellulare">Cellulare</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tech_tablet" name="tech_tablet">
+                        <label for="tech_tablet">Tablet</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tech_ebook" name="tech_ebook">
+                        <label for="tech_ebook">E-book Reader</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tech_fotocamera" name="tech_fotocamera">
+                        <label for="tech_fotocamera">Fotocamera</label>
+                    </div>
                 </div>
             </div>
             
-            <h3 class="section-title">Dispositivi tecnologici</h3>
-            <div class="checkbox-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="cellulare" checked>
-                    <label for="cellulare">Cellulare</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="caricatore" checked>
-                    <label for="caricatore">Caricatore cellulare</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="powerbank">
-                    <label for="powerbank">Power bank</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="computer">
-                    <label for="computer">Computer portatile</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="caricatore_pc">
-                    <label for="caricatore_pc">Caricatore computer</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="tablet">
-                    <label for="tablet">Tablet</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="ebook">
-                    <label for="ebook">E-book reader</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="cuffie">
-                    <label for="cuffie">Cuffie/Auricolari</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="adattatore">
-                    <label for="adattatore">Adattatore prese internazionali</label>
+            <div class="form-group checkboxes">
+                <label class="checkbox-header">Accessori Tecnologici:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="acc_caricatore" name="acc_caricatore" checked>
+                        <label for="acc_caricatore">Caricabatterie</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="acc_powerbank" name="acc_powerbank">
+                        <label for="acc_powerbank">Power Bank</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="acc_adattatore" name="acc_adattatore">
+                        <label for="acc_adattatore">Adattatore Universale</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="acc_cuffie" name="acc_cuffie">
+                        <label for="acc_cuffie">Cuffie/Auricolari</label>
+                    </div>
                 </div>
             </div>
             
-            <h3 class="section-title">Medicinali</h3>
-            <div class="checkbox-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="analgesici" checked>
-                    <label for="analgesici">Analgesici (Aspirina, Paracetamolo)</label>
+            <div class="form-group checkboxes">
+                <label class="checkbox-header">Igiene Personale:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="igiene_spazzolino" name="igiene_spazzolino" checked>
+                        <label for="igiene_spazzolino">Spazzolino</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="igiene_dentifricio" name="igiene_dentifricio" checked>
+                        <label for="igiene_dentifricio">Dentifricio</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="igiene_deodorante" name="igiene_deodorante" checked>
+                        <label for="igiene_deodorante">Deodorante</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="igiene_saponi" name="igiene_saponi">
+                        <label for="igiene_saponi">Saponi/Shampoo</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="igiene_rasoio" name="igiene_rasoio">
+                        <label for="igiene_rasoio">Rasoio</label>
+                    </div>
                 </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="antiacidi">
-                    <label for="antiacidi">Antiacidi/Digestivi</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="antidiarroici">
-                    <label for="antidiarroici">Antidiarroici</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="antistaminici">
-                    <label for="antistaminici">Antistaminici</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="medicinali_personali">
-                    <label for="medicinali_personali">Medicinali personali specifici</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="cerotti" checked>
-                    <label for="cerotti">Cerotti/Kit primo soccorso</label>
+            </div>
+            
+            <div class="form-group checkboxes">
+                <label class="checkbox-header">Medicinali:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="med_antidolorifico" name="med_antidolorifico" checked>
+                        <label for="med_antidolorifico">Antidolorifico</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="med_antistaminico" name="med_antistaminico">
+                        <label for="med_antistaminico">Antistaminico</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="med_disinfettante" name="med_disinfettante">
+                        <label for="med_disinfettante">Disinfettante</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="med_cerotti" name="med_cerotti" checked>
+                        <label for="med_cerotti">Cerotti</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="med_specifici" name="med_specifici">
+                        <label for="med_specifici">Medicinali specifici</label>
+                    </div>
                 </div>
             </div>
             
@@ -648,6 +695,7 @@
             risultati.pantaloni = Math.ceil(durata_effettiva * 0.4);
             risultati.maglie = Math.ceil(durata_effettiva * 0.5 * (packingRules.clima[clima].maglie || 1));
             risultati.calzini = durata + 1;
+            risultati.pigiama = Math.ceil(durata / 3) || 1; // Un pigiama ogni 3 giorni, minimo 1
             
             // Aggiungiamo indumenti specifici per clima
             Object.keys(packingRules.clima[clima]).forEach(item => {
@@ -725,16 +773,24 @@
             cravatte: "Cravatte / Accessori formali",
             outfit_casual_elegante: "Outfit casual-elegante",
             outfit_elegante: "Outfit elegante",
-            outfit_eventi_speciali: "Outfit per eventi speciali"
+            outfit_eventi_speciali: "Outfit per eventi speciali",
         };
         
         // Categorie per organizzare gli indumenti nell'output
         const categorie = {
-            "Indumenti base": ["intimo", "t_shirt", "pantaloni", "maglie", "calzini"],
+            "Indumenti base": ["intimo", "t_shirt", "pantaloni", "maglie", "calzini", "pigiama"],
             "Capispalla e accessori": ["giacca_pesante", "giacca_leggera", "sciarpa", "guanti", "berretto", "cappello", "giacca_impermeabile"],
             "Calzature": ["scarpe_comode", "scarpe_trekking", "scarponi", "infradito"],
             "Outfit specifici": ["outfit_casual_elegante", "outfit_elegante", "outfit_eventi_speciali", "abbigliamento_tecnico", "camicie", "completi", "cravatte"],
             "Per il mare": ["costumi", "copricostumi", "telo_mare"]
+        };
+        
+        // Categorie per elementi aggiuntivi
+        const categorieAggiuntive = {
+            "Tecnologia": "tech_",
+            "Accessori Tecnologici": "acc_",
+            "Igiene Personale": "igiene_",
+            "Medicinali": "med_"
         };
         
         // Gestione del form
@@ -808,6 +864,31 @@
             
             // Mostriamo la sezione dei risultati
             document.getElementById('result').style.display = 'block';
+            
+            // Aggiungiamo gli elementi aggiuntivi selezionati
+            resultDiv.innerHTML += `<div class="category-header">Elementi Aggiuntivi</div>`;
+            
+            // Attraversiamo le categorie aggiuntive
+            for (const categoria in categorieAggiuntive) {
+                let hasItems = false;
+                let categoryHtml = `<div class="category">${categoria}</div><ul class="packing-list">`;
+                
+                // Troviamo tutti gli elementi selezionati per questa categoria
+                const prefix = categorieAggiuntive[categoria];
+                const checkboxes = document.querySelectorAll(`input[type="checkbox"][id^="${prefix}"]:checked`);
+                
+                checkboxes.forEach(checkbox => {
+                    const label = document.querySelector(`label[for="${checkbox.id}"]`).textContent;
+                    categoryHtml += `<li>${label}</li>`;
+                    hasItems = true;
+                });
+                
+                categoryHtml += '</ul>';
+                
+                if (hasItems) {
+                    resultDiv.innerHTML += categoryHtml;
+                }
+            }
             
             // Event listener per il pulsante di stampa
             document.getElementById('btn-print').addEventListener('click', function() {
