@@ -1461,7 +1461,10 @@ if (weatherData) {
         ${weatherData.hasRain ? '<div class="tip-item">Prevista pioggia durante il soggiorno</div>' : ''}
         ${weatherData.hasSnow ? '<div class="tip-item">Prevista neve durante il soggiorno</div>' : ''}
     `;
-    
+
+        // Inserisci prima dei consigli
+    resultDiv.parentNode.insertBefore(weatherDiv, document.getElementById('tips-section'));
+}
   
             // Mostriamo la sezione dei risultati
             document.getElementById('result').style.display = 'block';
